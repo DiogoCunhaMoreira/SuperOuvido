@@ -1,0 +1,273 @@
+.piano-detector {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px;
+    font-family: Arial, sans-serif;
+  }
+  
+  .controls {
+    margin-bottom: 20px;
+  }
+  
+  button {
+    padding: 10px 15px;
+    margin: 0 10px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 16px;
+  }
+  
+  button:disabled {
+    background-color: #cccccc;
+    cursor: not-allowed;
+  }
+  
+  .status {
+    margin-bottom: 20px;
+    text-align: center;
+  }
+  
+  .piano-keyboard {
+    display: flex;
+    position: relative;
+    width: 100%;
+    height: 200px;
+    overflow-x: auto;
+  }
+  
+  .piano-key {
+    position: relative;
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    padding-bottom: 10px;
+    box-sizing: border-box;
+    transition: background-color 0.1s ease;
+  }
+  
+  .white-key {
+    width: 40px;
+    height: 200px;
+    background-color: white;
+    border: 1px solid #ccc;
+    z-index: 1;
+  }
+  
+  .black-key {
+    width: 30px;
+    height: 120px;
+    background-color: black;
+    margin-left: -15px;
+    margin-right: -15px;
+    z-index: 2;
+    color: white;
+  }
+  
+  .active {
+    background-color: #91d4ff;
+  }
+  
+  .black-key.active {
+    background-color: #2196F3;
+  }
+  
+  .note-name {
+    font-size: 12px;
+  }
+  
+  /* Estilos para o painel de opções */
+  .options-panel {
+    width: 100%;
+    max-width: 600px;
+    margin-bottom: 20px;
+    background-color: #f9f9f9;
+    border-radius: 8px;
+    border: 1px solid #e0e0e0;
+    padding: 15px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  }
+  
+  .options-section {
+    margin-bottom: 15px;
+  }
+  
+  .options-section:last-child {
+    margin-bottom: 0;
+  }
+  
+  .options-label {
+    font-weight: bold;
+    margin-bottom: 10px;
+    font-size: 16px;
+    color: #333;
+  }
+  
+  .options-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    justify-content: center;
+  }
+  
+  .option-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    background-color: white;
+    padding: 10px;
+    border-radius: 6px;
+    border: 2px solid #e0e0e0;
+    cursor: pointer;
+    flex: 1;
+    min-width: 100px;
+    max-width: 150px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    transition: all 0.2s ease;
+  }
+  
+  .option-item:hover {
+    border-color: #bdbdbd;
+  }
+  
+  .option-item.selected {
+    border-color: #4CAF50;
+    background-color: #f1f8e9;
+  }
+  
+  .option-item input {
+    position: absolute;
+    opacity: 0;
+    cursor: pointer;
+    height: 0;
+    width: 0;
+  }
+  
+  .option-name {
+    font-weight: bold;
+    margin-bottom: 5px;
+    font-size: 15px;
+    color: #333;
+  }
+  
+  .option-description {
+    font-size: 12px;
+    color: #666;
+  }
+  
+  /* Visual para o registo do piano */
+  .options-section:nth-child(2) .option-item {
+    position: relative;
+    overflow: hidden;
+  }
+  
+  .options-section:nth-child(2) .option-item::after {
+    content: "";
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    z-index: 1;
+  }
+  
+  .options-section:nth-child(2) .option-item:nth-child(1)::after {
+    background-color: #003366; /* Azul escuro para graves */
+  }
+  
+  .options-section:nth-child(2) .option-item:nth-child(2)::after {
+    background-color: #4CAF50; /* Verde para médios */
+  }
+  
+  .options-section:nth-child(2) .option-item:nth-child(3)::after {
+    background-color: #FF5722; /* Laranja/vermelho para agudos */
+  }
+  
+  /* Estilo para a exibição do acorde */
+  .chord-display {
+    margin: 20px 0;
+    padding: 25px;
+    background-color: #e3f2fd;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    min-width: 250px;
+    position: relative;
+    overflow: hidden;
+  }
+  
+  /* Estilos diferentes baseados no tipo de acorde */
+  .chord-display::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 6px;
+    height: 100%;
+  }
+  
+  .chord-display:has(.chord-type:contains('Tríade'))::before {
+    background-color: #4CAF50; /* Verde para tríades */
+  }
+  
+  .chord-display:has(.chord-type:contains('Sétima'))::before {
+    background-color: #2196F3; /* Azul para acordes de sétima */
+  }
+  
+  .chord-display:has(.chord-type:contains('Estendido'))::before {
+    background-color: #9C27B0; /* Roxo para acordes estendidos */
+  }
+  
+  .chord-name {
+    font-size: 42px;
+    font-weight: bold;
+    color: #2962ff;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
+  }
+  
+  /* Estilos diferentes para diferentes tipos de acordes */
+  .chord-display:has(.chord-type:contains('Estendido')) .chord-name {
+    color: #9C27B0; /* Roxo para acordes estendidos */
+    background: linear-gradient(45deg, #9C27B0, #3F51B5);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+  
+  .chord-display:has(.chord-type:contains('Sétima')) .chord-name {
+    color: #2196F3; /* Azul para acordes de sétima */
+  }
+  
+  .chord-type {
+    margin-top: 5px;
+    font-size: 14px;
+    font-weight: normal;
+    color: #666;
+  }
+  
+  .debug-info {
+    font-size: 12px;
+    color: #666;
+    font-style: italic;
+    margin-top: 10px;
+  }
+  
+  /* Adaptações responsivas */
+  @media (max-width: 600px) {
+    .options-container {
+      flex-direction: column;
+      align-items: center;
+    }
+    
+    .option-item {
+      width: 100%;
+      max-width: 100%;
+    }
+    
+    .chord-name {
+      font-size: 32px;
+    }
+  }
