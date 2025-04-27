@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import { BasicPitch } from "@spotify/basic-pitch";
 import "./PianoDetector.css";
+import GeminiComponent from "./GeminiComponent";
 
 const PianoDetector = () => {
   // Estados
@@ -760,6 +761,9 @@ const PianoDetector = () => {
           ))}
         </div>
       </div>
+      {detectedNotes.length > 0 && (
+        <GeminiComponent detectedNotes={detectedNotes} />
+      )}
     </div>
   );
 };

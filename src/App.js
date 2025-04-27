@@ -1,12 +1,13 @@
 import React from 'react';
 import './App.css';
 import PianoDetector from './PianoDetector';
+import logo from './images/logo.png'
 
 function App() {
   return (
     <div className="App">
       <header className="App-header">
-        <h1>Piano Chord Detector</h1>
+        <img src={logo} className='logo-image'></img>
       </header>
       <main>
         <PianoDetector />
