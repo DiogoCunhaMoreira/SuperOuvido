@@ -241,7 +241,6 @@ const PianoDetector = () => {
 
         // Chamada a função detectNotes com a framesCollection como argumento para obter as notas MIDI tocadas
         const { detectedMidiNotes } = detectNotes(framesCollection);
-
         if (detectedMidiNotes.length > 0) {
           setActiveNotes(detectedMidiNotes);
           setDetectedNotes(detectedMidiNotes);
@@ -485,7 +484,6 @@ const PianoDetector = () => {
     O uso da estrutura de dados Set() também elimina notas dúplicadas.
     */
     const pitchClasses = new Set(midiNotes.map((note) => note % 12));
-
     return {
       detectedMidiNotes: midiNotes,
       pitchClasses,
