@@ -4,6 +4,7 @@ import "./PianoDetector.css";
 import GeminiComponent from "./GeminiComponent";
 import AudioService from "./AudioService";
 import NoteDetector from "./NoteDetector";
+import historyManager from "./HistoryManager";
 
 const PianoDetector = () => {
   // Estados
@@ -18,10 +19,26 @@ const PianoDetector = () => {
   const [progress, setProgress] = useState(0);
   const [warningInfo, setWarningInfo] = useState("");
   const [chordPitchClasses, setChordPitchClasses] = useState(new Set());
+  // History state from store
+  const [historyState, setHistoryState] = useState({
+    searchHistory: [],
+    showHistory: false
+  });
 
   const audioServiceRef = useRef(new AudioService());
   const noteDetectorRef = useRef(new NoteDetector());
   const allNotes = noteDetectorRef.current.getAllNotes();
+
+  // Subscribe to history store changes
+  useEffect(() => {
+    const unsubscribe = historyManager.subscribe(newState => {
+      setHistoryState(newState);
+    });
+    
+    return () => {
+      unsubscribe();
+    };
+  }, []);
 
   // Inicializa o BasicPitch assim que a aplicação é iniciada (assim que o componente é montado)
   useEffect(() => {
@@ -111,6 +128,13 @@ const PianoDetector = () => {
   // Função que permite ao utilizador ouvir o audio gravado
   const playRecording = () => {
     audioServiceRef.current.playRecording(recordedAudio);
+  };
+
+  // History control functions
+  const saveAnalysisToHistory = (response) => {
+    if (detectedNotes.length > 0) {
+      historyManager.saveToHistory(detectedNotes, response);
+    }
   };
 
   return (
@@ -216,7 +240,14 @@ const PianoDetector = () => {
         </div>
       </div>
       {detectedNotes.length > 0 && (
-        <GeminiComponent detectedNotes={detectedNotes} />
+        <GeminiComponent 
+          detectedNotes={detectedNotes}
+          searchHistory={historyState.searchHistory}
+          showHistory={historyState.showHistory}
+          onSaveToHistory={saveAnalysisToHistory}
+          onToggleHistory={() => historyManager.toggleHistory()}
+          onClearHistory={() => historyManager.clearHistory()}
+        />
       )}
     </div>
   );

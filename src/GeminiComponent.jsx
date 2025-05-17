@@ -14,26 +14,17 @@ if (!apiKeyFromEnv) {
   model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
 }
 
-function GeminiComponent({ detectedNotes = [] }) {
+function GeminiComponent({ 
+  detectedNotes = [],
+  searchHistory = [],
+  showHistory = false,
+  onSaveToHistory,
+  onToggleHistory,
+  onClearHistory 
+}) {
   const [loading, setLoading] = useState(false);
   const [response, setResponse] = useState('');
   const [error, setError] = useState('');
-  const [searchHistory, setSearchHistory] = useState([]);
-  const [showHistory, setShowHistory] = useState(false);
-  
-  // Carregar o histórico ao iniciar o componente
-  useEffect(() => {
-    const savedHistory = localStorage.getItem("notesAnalysisHistory");
-    if (savedHistory) {
-      try {
-        setSearchHistory(JSON.parse(savedHistory));
-      } catch (e) {
-        console.error("Erro ao carregar histórico:", e);
-        localStorage.removeItem("notesAnalysisHistory");
-        setSearchHistory([]);
-      }
-    }
-  }, []);
   
   // Formatar as notas em um formato legível
   const formatNotes = (notes) => {
@@ -41,42 +32,6 @@ function GeminiComponent({ detectedNotes = [] }) {
     const uniqueNoteNames = new Set(notes.map(midiNote => noteNames[midiNote % 12]));
     return Array.from(uniqueNoteNames).join(", ");
   };
-  
-  const saveToHistory = (notes, analysisResponse) => {
-    // Recupere o histórico atual
-    let currentHistory = [];
-    const savedHistory = localStorage.getItem("notesAnalysisHistory");
-    if (savedHistory) {
-      try {
-        currentHistory = JSON.parse(savedHistory);
-      } catch (e) {
-        console.error("Erro ao carregar histórico:", e);
-      }
-    }
-    
-    const formattedNotes = formatNotes(notes);
-    
-    // Verifique se já existe uma entrada com as mesmas notas
-    const isDuplicate = currentHistory.some(item => 
-      item.formattedNotes === formattedNotes
-    );
-    
-    // Se não for duplicata, adicione ao histórico
-    if (!isDuplicate) {
-      const historyItem = {
-        id: Date.now(),
-        notes: [...notes],
-        formattedNotes,
-        response: analysisResponse,
-        timestamp: new Date().toISOString()
-      };
-      
-      // Adicionar ao início do histórico e limitar a 20 itens
-      const updatedHistory = [historyItem, ...currentHistory].slice(0, 20);
-      setSearchHistory(updatedHistory);
-      localStorage.setItem("notesAnalysisHistory", JSON.stringify(updatedHistory));
-    }
-  };  
   
   // Criar o prompt automaticamente com as notas detectadas
   const createPrompt = (notes) => {
@@ -94,6 +49,13 @@ function GeminiComponent({ detectedNotes = [] }) {
       handleGeminiRequest();
     }
   }, [detectedNotes]);
+  
+  // Save the response to history when it's received
+  useEffect(() => {
+    if (response && !loading && detectedNotes.length > 0) {
+      onSaveToHistory(response);
+    }
+  }, [response, loading]);
 
   const handleGeminiRequest = async () => {
     if (!model) {
@@ -113,21 +75,12 @@ function GeminiComponent({ detectedNotes = [] }) {
       const result = await model.generateContent(prompt);
       const textResponse = result.response.text();
       setResponse(textResponse);
-      
-      // Salvar no histórico após obter resposta com sucesso
-      saveToHistory(detectedNotes, textResponse);
     } catch (error) {
       console.error("Erro ao chamar a API Gemini:", error);
       setError("Ocorreu um erro ao analisar as notas com o Gemini.");
     } finally {
       setLoading(false);
     }
-  };
-
-  // Limpar histórico
-  const clearHistory = () => {
-    setSearchHistory([]);
-    localStorage.removeItem("notesAnalysisHistory");
   };
   
   // Carregar análise do histórico
@@ -179,7 +132,7 @@ function GeminiComponent({ detectedNotes = [] }) {
       
       {/* Botão para mostrar/ocultar histórico - SEMPRE VISÍVEL */}
       <button 
-        onClick={() => setShowHistory(!showHistory)}
+        onClick={onToggleHistory}
         style={{ 
           marginTop: '20px', 
           padding: '8px 15px', 
@@ -196,7 +149,7 @@ function GeminiComponent({ detectedNotes = [] }) {
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
             <h4 style={{ margin: '0' }}>Histórico de Análises</h4>
             <button 
-              onClick={clearHistory} 
+              onClick={onClearHistory} 
               style={{ fontSize: '0.8rem', padding: '4px 8px' }}
             >
               Limpar histórico
