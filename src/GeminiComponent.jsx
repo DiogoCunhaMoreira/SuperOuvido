@@ -85,7 +85,7 @@ function GeminiComponent({ detectedNotes = [] }) {
     Diz-me qual acorde isso poderia formar, quais as escalas a que estas notas pertencem, 
     e sugere algumas progressões harmónicas possíveis baseadas neste conjunto de notas.
     Formata a tua resposta com Markdown, usando títulos, listas e secções para melhor legibilidade.
-    A resposta deve ser dada em pt pt.`;
+    A resposta deve ser dada em pt pt. Atenção aos acentos e diferenças entre Português de Portugal e Português do Brasil.`;
   };
 
   // Chama a API Gemini automaticamente quando as notas mudam
