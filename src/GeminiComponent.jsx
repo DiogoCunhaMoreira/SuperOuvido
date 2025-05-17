@@ -2,88 +2,99 @@ import React, { useState, useEffect } from 'react';
 import { GoogleGenerativeAI } from '@google/generative-ai';
 import ReactMarkdown from 'react-markdown';
 
+/*
+  Inicializa a API usando a API key e, se a chave não estiver definida,
+  apresenta uma mensagem de erro.
+ */
 const apiKeyFromEnv = process.env.REACT_APP_GEMINI_API_KEY;
-
 let genAI;
 let model;
-
 if (!apiKeyFromEnv) {
-  console.error("Erro: Não encontrou a variável no .env");
+  console.error("Erro: Private key não encontrada");
 } else {
   genAI = new GoogleGenerativeAI(apiKeyFromEnv);
   model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
 }
 
-function GeminiComponent({ 
-  detectedNotes = [],
-  searchHistory = [],
-  showHistory = false,
-  onSaveToHistory,
-  onToggleHistory,
-  onClearHistory 
-}) {
+/*
+  Componente responsável pela comunicação com a Gemini API. Recebe as notas detectadas,
+  analisa-as e retorna a resposta do LLM.
+ */
+function GeminiComponent({ detectedNotes = [], searchHistory = [], showHistory = false, onSaveToHistory, onToggleHistory, onClearHistory }) {
+  // Estados para controlar a interface e o fluxo de dados
   const [loading, setLoading] = useState(false);
   const [response, setResponse] = useState('');
   const [error, setError] = useState('');
-  
-  // Formatar as notas em um formato legível
+
+  /* 
+    Converte notas MIDI em notas "legíveis".
+    Usa um Set para eliminar notas duplicadas e retorna uma string formatada.
+    Usada na exibição e no prompt.
+   */
   const formatNotes = (notes) => {
     const noteNames = ["Dó", "Dó#", "Ré", "Ré#", "Mi", "Fá", "Fá#", "Sol", "Sol#", "Lá", "Lá#", "Si"];
     const uniqueNoteNames = new Set(notes.map(midiNote => noteNames[midiNote % 12]));
     return Array.from(uniqueNoteNames).join(", ");
   };
-  
-  // Criar o prompt automaticamente com as notas detectadas
+
+  /*
+    Construção do prompt baseado nas notas detectadas.
+   */
   const createPrompt = (notes) => {
     const formattedNotes = formatNotes(notes);
-    return `Analisei estas notas musicais: ${formattedNotes}. 
-    Diz-me qual acorde isso poderia formar, quais as escalas a que estas notas pertencem, 
-    e sugere algumas progressões harmónicas possíveis baseadas neste conjunto de notas.
-    Formata a tua resposta com Markdown, usando títulos, listas e secções para melhor legibilidade.
-    A resposta deve ser dada em pt pt. Atenção aos acentos e diferenças entre Português de Portugal e Português do Brasil.`;
+    return `Analisei estas notas musicais: ${formattedNotes}. Diz-me qual acorde isso poderia formar, quais as escalas a que estas notas pertencem, e sugere algumas progressões harmónicas possíveis baseadas neste conjunto de notas. Formata a tua resposta com Markdown, usando títulos, listas e secções para melhor legibilidade. A resposta deve ser dada em pt pt. Atenção aos acentos e diferenças entre Português de Portugal e Português do Brasil.`;
   };
 
-  // Chama a API Gemini automaticamente quando as notas mudam
+  /*
+    Effect Hook que chama a API sempre que as notas detectadas mudam, garantindo que a análise
+    só é executada quando há notas para analisar.
+   */
   useEffect(() => {
     if (detectedNotes.length > 0) {
       handleGeminiRequest();
     }
   }, [detectedNotes]);
-  
-  // Save the response to history when it's received
+
+  /*
+    Effect Hook que guarda a resposta no histórico
+   */
   useEffect(() => {
     if (response && !loading && detectedNotes.length > 0) {
       onSaveToHistory(response);
     }
   }, [response, loading]);
 
+  /*
+    Função principal que faz a chamada à Gemini API.
+    Controla os estados de carregamento, erro e resposta durante todo o processo.
+   */
   const handleGeminiRequest = async () => {
     if (!model) {
       setError("O modelo Gemini não foi inicializado.");
       return;
     }
-    
     if (detectedNotes.length === 0) {
       return;
     }
-
     setLoading(true);
     setError('');
-    
     try {
       const prompt = createPrompt(detectedNotes);
       const result = await model.generateContent(prompt);
       const textResponse = result.response.text();
       setResponse(textResponse);
     } catch (error) {
-      console.error("Erro ao chamar a API Gemini:", error);
-      setError("Ocorreu um erro ao analisar as notas com o Gemini.");
+      console.error("Erro ao chamar a Gemini API:", error);
+      setError("Ocorreu um erro ao analisar as notas com a Gemini API.");
     } finally {
       setLoading(false);
     }
   };
-  
-  // Carregar análise do histórico
+
+  /*
+    Carrega uma análise prévia do histórico e permite que o utilizador
+    recupere análises anteriores
+   */
   const loadFromHistory = (historyItem) => {
     setResponse(historyItem.response);
   };
@@ -130,7 +141,6 @@ function GeminiComponent({
         </div>
       )}
       
-      {/* Botão para mostrar/ocultar histórico - SEMPRE VISÍVEL */}
       <button 
         onClick={onToggleHistory}
         style={{ 
