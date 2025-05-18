@@ -32,28 +32,28 @@ function HistoryView({
   );
 
   return (
-    <div className="search-history" style={{ 
-      marginTop: '20px',
-      backgroundColor: '#fff',
-      borderRadius: '12px',
-      boxShadow: '0 6px 18px rgba(0,0,0,0.08)',
-      padding: '20px',
-      transition: 'all 0.3s ease'
-    }}>
-      <div style={{ 
-        display: 'flex', 
-        justifyContent: 'space-between', 
-        alignItems: 'center',
-        borderBottom: '1px solid #eee',
-        paddingBottom: '12px',
-        marginBottom: '15px'
-      }}>
-        <h4 style={{ margin: '0', fontSize: '18px', fontWeight: '600' }}>Histórico de Análises</h4>
+    <div className="search-history">
+      <div style={{ marginBottom: '20px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+        <input 
+          type="text" 
+          placeholder="Pesquisar no histórico..." 
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+          style={{
+            flex: 1,
+            padding: '10px 15px',
+            borderRadius: '8px',
+            border: '1px solid #ddd',
+            fontSize: '14px',
+            backgroundColor: '#f9f9f9'
+          }}
+        />
         <button 
           onClick={onClearHistory} 
           style={{ 
-            fontSize: '0.8rem', 
-            padding: '6px 12px',
+            marginLeft: '10px',
+            fontSize: '0.85rem', 
+            padding: '10px 15px',
             border: 'none',
             backgroundColor: '#f44336',
             color: 'white',
@@ -67,27 +67,10 @@ function HistoryView({
           Limpar histórico
         </button>
       </div>
-      
-      <div style={{ margin: '10px 0 20px 0' }}>
-        <input 
-          type="text" 
-          placeholder="Pesquisar no histórico..." 
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
-          style={{
-            width: '100%',
-            padding: '10px 15px',
-            borderRadius: '8px',
-            border: '1px solid #ddd',
-            fontSize: '14px',
-            backgroundColor: '#f9f9f9'
-          }}
-        />
-      </div>
 
       {filteredHistory.length > 0 ? (
         Object.entries(groupByDate(filteredHistory)).map(([date, items]) => (
-          <div key={date}>
+          <div key={date} style={{ marginBottom: '20px' }}>
             <h5 style={{ 
               margin: '15px 0 10px 0',
               color: '#666',

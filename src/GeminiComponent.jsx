@@ -1,7 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, forwardRef, useImperativeHandle } from 'react';
 import { GoogleGenerativeAI } from '@google/generative-ai';
 import ReactMarkdown from 'react-markdown';
-import HistoryView from './HistoryView';
 
 /*
   Inicializa a API usando a API key e, se a chave não estiver definida,
@@ -21,11 +20,29 @@ if (!apiKeyFromEnv) {
   Componente responsável pela comunicação com a Gemini API. Recebe as notas detectadas,
   analisa-as e retorna a resposta do LLM.
  */
-function GeminiComponent({ detectedNotes = [], searchHistory = [], showHistory = false, onSaveToHistory, onToggleHistory, onClearHistory }) {
+const GeminiComponent = forwardRef(({ detectedNotes = [], searchHistory = [], onSaveToHistory }, ref) => {
   // Estados para controlar a interface e o fluxo de dados
   const [loading, setLoading] = useState(false);
   const [response, setResponse] = useState('');
   const [error, setError] = useState('');
+  
+  /* 
+    Expõe funções para outros componentes acessarem via ref.
+    IMPORTANTE: Não há mais dependência de useEffect para chamadas automáticas à API.
+  */
+  useImperativeHandle(ref, () => ({
+    // Função para analisar notas usando a API
+    analyzeNotes: async () => {
+      await handleGeminiRequest(detectedNotes);
+    },
+    
+    // Função para carregar de um item do histórico
+    loadHistoryItem: (historyItem) => {
+      setResponse(historyItem.response);
+      setLoading(false);
+      setError('');
+    }
+  }));
 
   /* 
     Converte notas MIDI em notas "legíveis".
@@ -47,56 +64,37 @@ function GeminiComponent({ detectedNotes = [], searchHistory = [], showHistory =
   };
 
   /*
-    Effect Hook que chama a API sempre que as notas detectadas mudam, garantindo que a análise
-    só é executada quando há notas para analisar.
-   */
-  useEffect(() => {
-    if (detectedNotes.length > 0) {
-      handleGeminiRequest();
-    }
-  }, [detectedNotes]);
-
-  /*
-    Effect Hook que guarda a resposta no histórico
-   */
-  useEffect(() => {
-    if (response && !loading && detectedNotes.length > 0) {
-      onSaveToHistory(response);
-    }
-  }, [response, loading]);
-
-  /*
     Função principal que faz a chamada à Gemini API.
     Controla os estados de carregamento, erro e resposta durante todo o processo.
+    Agora recebe as notas como parâmetro em vez de usar o estado.
    */
-  const handleGeminiRequest = async () => {
+  const handleGeminiRequest = async (notes) => {
     if (!model) {
       setError("O modelo Gemini não foi inicializado.");
       return;
     }
-    if (detectedNotes.length === 0) {
+    if (notes.length === 0) {
+      setError("Nenhuma nota para analisar.");
       return;
     }
+    
     setLoading(true);
     setError('');
+    
     try {
-      const prompt = createPrompt(detectedNotes);
+      const prompt = createPrompt(notes);
       const result = await model.generateContent(prompt);
       const textResponse = result.response.text();
       setResponse(textResponse);
+      
+      // Salvar no histórico após resposta bem-sucedida
+      onSaveToHistory(textResponse);
     } catch (error) {
       console.error("Erro ao chamar a Gemini API:", error);
       setError("Ocorreu um erro ao analisar as notas com a Gemini API.");
     } finally {
       setLoading(false);
     }
-  };
-
-  /*
-    Carrega uma análise prévia do histórico
-   */
-  const loadFromHistory = (historyItem) => {
-    setResponse(historyItem.response);
   };
 
   return (
@@ -140,35 +138,8 @@ function GeminiComponent({ detectedNotes = [], searchHistory = [], showHistory =
           <ReactMarkdown>{response}</ReactMarkdown>
         </div>
       )}
-      
-      <button 
-        onClick={onToggleHistory}
-        style={{ 
-          marginTop: '20px', 
-          padding: '8px 15px', 
-          cursor: 'pointer',
-          display: 'block',
-          backgroundColor: showHistory ? '#e57373' : '#4CAF50',
-          color: 'white',
-          border: 'none',
-          borderRadius: '4px',
-          fontWeight: '500',
-          transition: 'background-color 0.3s'
-        }}
-      >
-        {showHistory ? "Ocultar Histórico" : "Mostrar Histórico"}
-      </button>
-      
-      {/* Renderiza o componente de histórico quando showHistory é true */}
-      {showHistory && (
-        <HistoryView 
-          searchHistory={searchHistory}
-          onSelectItem={loadFromHistory}
-          onClearHistory={onClearHistory}
-        />
-      )}
     </div>
   );
-}
+});
 
 export default GeminiComponent;

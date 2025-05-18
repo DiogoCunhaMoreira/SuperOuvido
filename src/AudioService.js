@@ -125,6 +125,7 @@ class AudioService {
           const { detectedMidiNotes } = noteDetector.detectNotes(framesCollection, setWarningInfo);
           if (detectedMidiNotes.length > 0) {
             setActiveNotes(detectedMidiNotes);
+            // Usamos o callback com as notas detectadas
             setDetectedNotes(detectedMidiNotes);
   
             setStatus(`Análise completa`);
@@ -257,4 +258,4 @@ class AudioService {
     }
   }
   
-  export default AudioService;  
+  export default AudioService;

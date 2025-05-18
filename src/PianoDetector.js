@@ -5,6 +5,8 @@ import GeminiComponent from "./GeminiComponent";
 import AudioService from "./AudioService";
 import NoteDetector from "./NoteDetector";
 import historyManager from "./HistoryManager";
+import Modal from "./Modal";
+import HistoryView from "./HistoryView";
 
 const PianoDetector = () => {
   // Estados
@@ -19,14 +21,20 @@ const PianoDetector = () => {
   const [progress, setProgress] = useState(0);
   const [warningInfo, setWarningInfo] = useState("");
   const [chordPitchClasses, setChordPitchClasses] = useState(new Set());
+  // Estado para o modal
+  const [isModalOpen, setIsModalOpen] = useState(false);
   // History state from store
   const [historyState, setHistoryState] = useState({
     searchHistory: [],
     showHistory: false
   });
+  // Estado para pendentes
+  const [pendingAnalysis, setPendingAnalysis] = useState(false);
+  const [pendingHistoryItem, setPendingHistoryItem] = useState(null);
 
   const audioServiceRef = useRef(new AudioService());
   const noteDetectorRef = useRef(new NoteDetector());
+  const geminiComponentRef = useRef(null);
   const allNotes = noteDetectorRef.current.getAllNotes();
 
   // Subscribe to history store changes
@@ -34,6 +42,9 @@ const PianoDetector = () => {
     const unsubscribe = historyManager.subscribe(newState => {
       setHistoryState(newState);
     });
+    
+    // Forçar carregamento do histórico na inicialização
+    historyManager.loadHistory();
     
     return () => {
       unsubscribe();
@@ -44,6 +55,21 @@ const PianoDetector = () => {
   useEffect(() => {
     noteDetectorRef.current.initBasicPitch(setStatus);
   }, []);
+
+  // Effect para lidar com análise pendente quando o componente Gemini está pronto
+  useEffect(() => {
+    // Se temos análise pendente e o componente Gemini está pronto
+    if (pendingAnalysis && geminiComponentRef.current && detectedNotes.length > 0) {
+      geminiComponentRef.current.analyzeNotes();
+      setPendingAnalysis(false);
+    }
+
+    // Se temos um item de histórico pendente e o componente Gemini está pronto
+    if (pendingHistoryItem && geminiComponentRef.current) {
+      geminiComponentRef.current.loadHistoryItem(pendingHistoryItem);
+      setPendingHistoryItem(null);
+    }
+  }, [pendingAnalysis, pendingHistoryItem, detectedNotes, geminiComponentRef.current]);
 
   /*
   Permite fazer um cleanup dos recursos sempre que a aplicação é fechada (componente desmontado):
@@ -118,7 +144,15 @@ const PianoDetector = () => {
         setProgress,
         noteDetectorRef.current,
         setActiveNotes,
-        setDetectedNotes
+        (notes) => {
+          // Primeiro definimos as notas detectadas
+          setDetectedNotes(notes);
+          
+          // Marcamos que há uma análise pendente
+          if (notes.length > 0) {
+            setPendingAnalysis(true);
+          }
+        }
       );
     } else {
       setStatus("Nenhuma gravação disponível para analisar");
@@ -136,6 +170,64 @@ const PianoDetector = () => {
       historyManager.saveToHistory(detectedNotes, response);
     }
   };
+
+  // Carrega uma análise prévia do histórico
+  const loadFromHistory = (historyItem) => {
+    // Definimos o item do histórico como pendente
+    setPendingHistoryItem(historyItem);
+    
+    // Depois atualizamos as notas detectadas para atualizar o teclado
+    setDetectedNotes(historyItem.notes);
+    
+    closeHistoryModal();
+  };
+
+  // Funções para controlar o modal
+  const openHistoryModal = () => {
+    setIsModalOpen(true);
+  };
+
+  const closeHistoryModal = () => {
+    setIsModalOpen(false);
+  };
+
+  // Estilo comum para os botões
+  const buttonStyle = {
+    padding: '10px 20px',
+    cursor: 'pointer',
+    backgroundColor: '#3F51B5',
+    color: 'white',
+    border: 'none',
+    borderRadius: '6px',
+    fontWeight: '500',
+    transition: 'all 0.3s ease',
+    boxShadow: '0 2px 5px rgba(0, 0, 0, 0.1)',
+    fontSize: '14px',
+    letterSpacing: '0.5px',
+    margin: '0 8px'
+  };
+
+  // Estilos para hover e disabled
+  const getButtonProps = (isDisabled) => ({
+    style: {
+      ...buttonStyle,
+      opacity: isDisabled ? 0.6 : 1,
+      cursor: isDisabled ? 'not-allowed' : 'pointer'
+    },
+    onMouseOver: (e) => {
+      if (!isDisabled) {
+        e.currentTarget.style.backgroundColor = '#303F9F';
+        e.currentTarget.style.boxShadow = '0 4px 8px rgba(0, 0, 0, 0.2)';
+        e.currentTarget.style.transform = 'translateY(-1px)';
+      }
+    },
+    onMouseOut: (e) => {
+      e.currentTarget.style.backgroundColor = '#3F51B5';
+      e.currentTarget.style.boxShadow = '0 2px 5px rgba(0, 0, 0, 0.1)';
+      e.currentTarget.style.transform = 'translateY(0)';
+    },
+    disabled: isDisabled
+  });
 
   return (
     /* Componente visual da aplicação que utiliza classes definidas no ficheiro PianoDetector.css */
@@ -155,37 +247,40 @@ const PianoDetector = () => {
         style={{
           display: "flex",
           justifyContent: "center",
+          flexWrap: "wrap",
           gap: "10px",
           margin: "20px 0",
         }}
       >
         <button
           onClick={startRecording}
-          disabled={isRecording || isAnalyzing}
-          style={{ padding: "8px 15px", cursor: "pointer" }}
+          {...getButtonProps(isRecording || isAnalyzing)}
         >
           Gravar
         </button>
         <button
           onClick={stopRecording}
-          disabled={!isRecording || isAnalyzing}
-          style={{ padding: "8px 15px", cursor: "pointer" }}
+          {...getButtonProps(!isRecording || isAnalyzing)}
         >
           Parar Gravação
         </button>
         <button
           onClick={analyzeRecording}
-          disabled={isRecording || !recordingComplete || isAnalyzing}
-          style={{ padding: "8px 15px", cursor: "pointer" }}
+          {...getButtonProps(isRecording || !recordingComplete || isAnalyzing)}
         >
           Analisar
         </button>
         <button
           onClick={playRecording}
-          disabled={isRecording || !recordingComplete || isAnalyzing}
-          style={{ padding: "8px 15px", cursor: "pointer" }}
+          {...getButtonProps(isRecording || !recordingComplete || isAnalyzing)}
         >
           Ouvir Gravação
+        </button>
+        <button
+          onClick={openHistoryModal}
+          {...getButtonProps(false)} // Sempre disponível
+        >
+          Ver Histórico
         </button>
       </div>
 
@@ -241,16 +336,27 @@ const PianoDetector = () => {
       </div>
       {detectedNotes.length > 0 && (
         <GeminiComponent 
+          ref={geminiComponentRef}
           detectedNotes={detectedNotes}
           searchHistory={historyState.searchHistory}
-          showHistory={historyState.showHistory}
           onSaveToHistory={saveAnalysisToHistory}
-          onToggleHistory={() => historyManager.toggleHistory()}
-          onClearHistory={() => historyManager.clearHistory()}
         />
       )}
+
+      {/* Modal para exibir o histórico - Mova-o para fora do GeminiComponent */}
+      <Modal 
+        isOpen={isModalOpen}
+        onClose={closeHistoryModal}
+        title="Histórico de Análises"
+      >
+        <HistoryView 
+          searchHistory={historyState.searchHistory}
+          onSelectItem={loadFromHistory}
+          onClearHistory={() => historyManager.clearHistory()}
+        />
+      </Modal>
     </div>
   );
-};
+}
 
 export default PianoDetector;
