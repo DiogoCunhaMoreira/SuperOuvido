@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { GoogleGenerativeAI } from '@google/generative-ai';
 import ReactMarkdown from 'react-markdown';
+import HistoryView from './HistoryView';
 
 /*
   Inicializa a API usando a API key e, se a chave não estiver definida,
@@ -92,8 +93,7 @@ function GeminiComponent({ detectedNotes = [], searchHistory = [], showHistory =
   };
 
   /*
-    Carrega uma análise prévia do histórico e permite que o utilizador
-    recupere análises anteriores
+    Carrega uma análise prévia do histórico
    */
   const loadFromHistory = (historyItem) => {
     setResponse(historyItem.response);
@@ -147,53 +147,25 @@ function GeminiComponent({ detectedNotes = [], searchHistory = [], showHistory =
           marginTop: '20px', 
           padding: '8px 15px', 
           cursor: 'pointer',
-          display: 'block'
+          display: 'block',
+          backgroundColor: showHistory ? '#e57373' : '#4CAF50',
+          color: 'white',
+          border: 'none',
+          borderRadius: '4px',
+          fontWeight: '500',
+          transition: 'background-color 0.3s'
         }}
       >
         {showHistory ? "Ocultar Histórico" : "Mostrar Histórico"}
       </button>
       
-      {/* Histórico de análises - Mostrado quando showHistory é true */}
+      {/* Renderiza o componente de histórico quando showHistory é true */}
       {showHistory && (
-        <div className="search-history" style={{ marginTop: '20px' }}>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-            <h4 style={{ margin: '0' }}>Histórico de Análises</h4>
-            <button 
-              onClick={onClearHistory} 
-              style={{ fontSize: '0.8rem', padding: '4px 8px' }}
-            >
-              Limpar histórico
-            </button>
-          </div>
-          
-          {searchHistory.length > 0 ? (
-            <div style={{ maxHeight: '300px', overflowY: 'auto', marginTop: '10px' }}>
-              {searchHistory.map((item) => (
-                <div 
-                  key={item.id} 
-                  onClick={() => loadFromHistory(item)}
-                  style={{ 
-                    padding: '10px', 
-                    margin: '8px 0', 
-                    border: '1px solid #eee',
-                    borderRadius: '4px',
-                    cursor: 'pointer',
-                    transition: 'background-color 0.2s'
-                  }}
-                  onMouseOver={(e) => e.currentTarget.style.backgroundColor = "#e9e9e9"}
-                  onMouseOut={(e) => e.currentTarget.style.backgroundColor = "transparent"}
-                >
-                  <p><strong>Notas:</strong> {item.formattedNotes}</p>
-                  <p style={{ fontSize: '0.8rem', color: '#777' }}>
-                    {new Date(item.timestamp).toLocaleDateString()} às {new Date(item.timestamp).toLocaleTimeString()}
-                  </p>
-                </div>
-              ))}
-            </div>
-          ) : (
-            <p style={{ marginTop: '10px', fontStyle: 'italic' }}>Nenhuma análise no histórico.</p>
-          )}
-        </div>
+        <HistoryView 
+          searchHistory={searchHistory}
+          onSelectItem={loadFromHistory}
+          onClearHistory={onClearHistory}
+        />
       )}
     </div>
   );

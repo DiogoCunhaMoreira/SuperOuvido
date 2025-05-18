@@ -94,7 +94,10 @@ class HistoryManager {
       Esta função é chamada quando o utilizador clica no botão de histórico.
      */
     toggleHistory() {
-      this.state.showHistory = !this.state.showHistory;
+        this.state = {
+            ...this.state,
+            showHistory: !this.state.showHistory
+          };
       this.notifyListeners();
     }
   
