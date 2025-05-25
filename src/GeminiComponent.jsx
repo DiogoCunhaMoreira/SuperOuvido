@@ -1,6 +1,8 @@
 import React, { useState, forwardRef, useImperativeHandle } from 'react';
 import { GoogleGenerativeAI } from '@google/generative-ai';
 import ReactMarkdown from 'react-markdown';
+import Icon from '@mdi/react';
+import { mdiChartLine, mdiChevronDown, mdiChevronUp, mdiLoading } from '@mdi/js';
 
 /*
   Inicializa a API usando a API key e, se a chave não estiver definida,
@@ -25,6 +27,7 @@ const GeminiComponent = forwardRef(({ detectedNotes = [], searchHistory = [], on
   const [loading, setLoading] = useState(false);
   const [response, setResponse] = useState('');
   const [error, setError] = useState('');
+  const [isAccordionOpen, setIsAccordionOpen] = useState(false);
   
   /* 
     Expõe funções para outros componentes acessarem via ref.
@@ -41,6 +44,7 @@ const GeminiComponent = forwardRef(({ detectedNotes = [], searchHistory = [], on
       setResponse(historyItem.response);
       setLoading(false);
       setError('');
+      setIsAccordionOpen(true); // Abre o accordion quando carrega do histórico
     }
   }));
 
@@ -80,6 +84,7 @@ const GeminiComponent = forwardRef(({ detectedNotes = [], searchHistory = [], on
     
     setLoading(true);
     setError('');
+    setIsAccordionOpen(true); // Abre o accordion quando inicia análise
     
     try {
       const prompt = createPrompt(notes);
@@ -98,46 +103,55 @@ const GeminiComponent = forwardRef(({ detectedNotes = [], searchHistory = [], on
   };
 
   return (
-    <div className="gemini-response" style={{ 
-      margin: '20px 0', 
-      width: '100%', 
-      maxWidth: '800px',
-      padding: '15px',
-      border: '1px solid #ddd',
-      borderRadius: '8px',
-      backgroundColor: '#f9f9f9' 
-    }}>
-      <h3>Análise Musical</h3>
-      
-      {detectedNotes.length > 0 && (
-        <div style={{ marginBottom: '10px' }}>
-          <p><strong>Notas detectadas:</strong> {formatNotes(detectedNotes)}</p>
-        </div>
-      )}
-      
-      {loading && (
-        <div style={{ textAlign: 'center', padding: '20px' }}>
-          <p>Analisando as notas...</p>
-        </div>
-      )}
-      
-      {error && (
-        <div style={{ color: 'red', margin: '10px 0' }}>
-          {error}
-        </div>
-      )}
-      
-      {!apiKeyFromEnv && (
-        <p style={{ color: 'red', marginTop: '10px' }}>
-          Erro: REACT_APP_GEMINI_API_KEY não definida. Crie um ficheiro `.env` na raiz do projeto e adicione a chave. Depois, reinicie o servidor.
-        </p>
-      )}
-      
-      {response && !loading && (
-        <div className="markdown-response">
-          <ReactMarkdown>{response}</ReactMarkdown>
-        </div>
-      )}
+    <div className="gemini-response-modern">
+      <div className="analysis-accordion">
+        <button 
+          className="analysis-accordion-header"
+          onClick={() => setIsAccordionOpen(!isAccordionOpen)}
+        >
+          <div className="analysis-accordion-title">
+            <Icon path={mdiChartLine} size={1} />
+            <span>Análise Musical</span>
+            {detectedNotes.length > 0 && (
+              <span className="notes-preview">({formatNotes(detectedNotes)})</span>
+            )}
+          </div>
+          <Icon 
+            path={isAccordionOpen ? mdiChevronUp : mdiChevronDown} 
+            size={1}
+            className="analysis-accordion-icon"
+          />
+        </button>
+        
+        {isAccordionOpen && (
+          <div className="analysis-accordion-content">
+            {loading && (
+              <div className="loading-state">
+                <Icon path={mdiLoading} size={1.5} className="loading-icon" />
+                <p>Analisando as notas...</p>
+              </div>
+            )}
+            
+            {error && (
+              <div className="error-state">
+                {error}
+              </div>
+            )}
+            
+            {!apiKeyFromEnv && (
+              <p className="api-key-error">
+                Erro: REACT_APP_GEMINI_API_KEY não definida. Crie um ficheiro `.env` na raiz do projeto e adicione a chave. Depois, reinicie o servidor.
+              </p>
+            )}
+            
+            {response && !loading && (
+              <div className="markdown-response">
+                <ReactMarkdown>{response}</ReactMarkdown>
+              </div>
+            )}
+          </div>
+        )}
+      </div>
     </div>
   );
 });

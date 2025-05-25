@@ -1,4 +1,13 @@
 import React, { useState, useEffect, useRef } from "react";
+import Icon from '@mdi/react';
+import { 
+  mdiMicrophone, 
+  mdiStop, 
+  mdiChartLine, 
+  mdiPlay, 
+  mdiHistory,
+  mdiMusicNote
+} from '@mdi/js';
 import { BasicPitch } from "@spotify/basic-pitch";
 import "./PianoDetector.css";
 import GeminiComponent from "./GeminiComponent";
@@ -191,126 +200,198 @@ const PianoDetector = () => {
     setIsModalOpen(false);
   };
 
-  // Estilo comum para os botões
-  const buttonStyle = {
-    padding: '10px 20px',
-    cursor: 'pointer',
-    backgroundColor: '#3F51B5',
-    color: 'white',
-    border: 'none',
-    borderRadius: '6px',
-    fontWeight: '500',
-    transition: 'all 0.3s ease',
-    boxShadow: '0 2px 5px rgba(0, 0, 0, 0.1)',
-    fontSize: '14px',
-    letterSpacing: '0.5px',
-    margin: '0 8px'
+  // Função auxiliar para determinar a classe do status
+  const getStatusClass = (status) => {
+    if (status.includes('erro') || status.includes('Erro')) return 'status-error';
+    if (status.includes('completo') || status.includes('carregado')) return 'status-success';
+    if (status.includes('processando') || status.includes('gravando')) return 'status-processing';
+    return 'status-info';
   };
 
-  // Estilos para hover e disabled
-  const getButtonProps = (isDisabled) => ({
-    style: {
-      ...buttonStyle,
-      opacity: isDisabled ? 0.6 : 1,
-      cursor: isDisabled ? 'not-allowed' : 'pointer'
-    },
-    onMouseOver: (e) => {
-      if (!isDisabled) {
-        e.currentTarget.style.backgroundColor = '#303F9F';
-        e.currentTarget.style.boxShadow = '0 4px 8px rgba(0, 0, 0, 0.2)';
-        e.currentTarget.style.transform = 'translateY(-1px)';
+  // Componente de botão moderno
+  const ModernButton = ({ 
+    onClick, 
+    disabled, 
+    icon, 
+    children, 
+    variant = 'primary',
+    size = 'medium' 
+  }) => {
+    const variants = {
+      primary: {
+        background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+        color: 'white',
+        hoverBackground: 'linear-gradient(135deg, #5a6fd8 0%, #6a4190 100%)'
+      },
+      secondary: {
+        background: 'linear-gradient(135deg, #f093fb 0%, #f5576c 100%)',
+        color: 'white',
+        hoverBackground: 'linear-gradient(135deg, #ed7de8 0%, #f04558 100%)'
+      },
+      success: {
+        background: 'linear-gradient(135deg, #4facfe 0%, #00f2fe 100%)',
+        color: 'white',
+        hoverBackground: 'linear-gradient(135deg, #3d9bfd 0%, #00e0ee 100%)'
       }
-    },
-    onMouseOut: (e) => {
-      e.currentTarget.style.backgroundColor = '#3F51B5';
-      e.currentTarget.style.boxShadow = '0 2px 5px rgba(0, 0, 0, 0.1)';
-      e.currentTarget.style.transform = 'translateY(0)';
-    },
-    disabled: isDisabled
-  });
+    };
+
+    const sizes = {
+      small: { padding: '8px 16px', fontSize: '12px' },
+      medium: { padding: '12px 24px', fontSize: '14px' },
+      large: { padding: '16px 32px', fontSize: '16px' }
+    };
+
+    return (
+      <button
+        onClick={onClick}
+        disabled={disabled}
+        style={{
+          ...sizes[size],
+          background: disabled ? '#cccccc' : variants[variant].background,
+          color: disabled ? '#666' : variants[variant].color,
+          border: 'none',
+          borderRadius: '12px',
+          cursor: disabled ? 'not-allowed' : 'pointer',
+          fontWeight: '600',
+          display: 'flex',
+          alignItems: 'center',
+          gap: '8px',
+          transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+          boxShadow: disabled 
+            ? 'none' 
+            : '0 4px 15px rgba(0, 0, 0, 0.2)',
+          transform: disabled ? 'none' : 'translateY(0)',
+          letterSpacing: '0.5px',
+          margin: '0 6px',
+          opacity: disabled ? 0.6 : 1,
+        }}
+        onMouseEnter={(e) => {
+          if (!disabled) {
+            e.target.style.background = variants[variant].hoverBackground;
+            e.target.style.transform = 'translateY(-2px)';
+            e.target.style.boxShadow = '0 8px 25px rgba(0, 0, 0, 0.3)';
+          }
+        }}
+        onMouseLeave={(e) => {
+          if (!disabled) {
+            e.target.style.background = variants[variant].background;
+            e.target.style.transform = 'translateY(0)';
+            e.target.style.boxShadow = '0 4px 15px rgba(0, 0, 0, 0.2)';
+          }
+        }}
+      >
+        {icon && <Icon path={icon} size={0.8} />}
+        {children}
+      </button>
+    );
+  };
 
   return (
     /* Componente visual da aplicação que utiliza classes definidas no ficheiro PianoDetector.css */
-    <div
-      className="piano-detector"
-      style={{
-        textAlign: "center",
-        maxWidth: "100%",
-        display: "flex",
-        flexDirection: "column",
-        alignItems: "center",
-      }}
-    >
-      {/*Permite ao utilizador controlar o ciclo de gravação de audio */}
-      <div
-        className="controls"
-        style={{
-          display: "flex",
-          justifyContent: "center",
-          flexWrap: "wrap",
-          gap: "10px",
-          margin: "20px 0",
-        }}
-      >
-        <button
-          onClick={startRecording}
-          {...getButtonProps(isRecording || isAnalyzing)}
-        >
-          Gravar
-        </button>
-        <button
-          onClick={stopRecording}
-          {...getButtonProps(!isRecording || isAnalyzing)}
-        >
-          Parar Gravação
-        </button>
-        <button
-          onClick={analyzeRecording}
-          {...getButtonProps(isRecording || !recordingComplete || isAnalyzing)}
-        >
-          Analisar
-        </button>
-        <button
-          onClick={playRecording}
-          {...getButtonProps(isRecording || !recordingComplete || isAnalyzing)}
-        >
-          Ouvir Gravação
-        </button>
-        <button
-          onClick={openHistoryModal}
-          {...getButtonProps(false)} // Sempre disponível
-        >
-          Ver Histórico
-        </button>
+    <div className="piano-detector-modern">
+      {/* Header com informações */}
+      <div className="status-card">
+        <div className="status-header">
+          <Icon path={mdiMusicNote} size={1.2} />
+          <h2>Detector de Notas Piano</h2>
+        </div>
+        
+        <div className="status-content">
+          <div className="status-item">
+            <span className="status-label">Status:</span>
+            <span className={`status-value ${getStatusClass(status)}`}>
+              {status}
+            </span>
+          </div>
+          
+          {isRecording && (
+            <div className="recording-indicator">
+              <div className="pulse-dot"></div>
+              <span>Gravando: {recordingDuration.toFixed(1)}s</span>
+            </div>
+          )}
+          
+          {progress > 0 && progress < 1 && (
+            <div className="progress-container">
+              <div className="progress-bar">
+                <div 
+                  className="progress-fill" 
+                  style={{ width: `${Math.round(progress * 100)}%` }}
+                ></div>
+              </div>
+              <span className="progress-text">
+                Processando: {Math.round(progress * 100)}%
+              </span>
+            </div>
+          )}
+          
+          {warningInfo && (
+            <div className="warning-card">
+              {warningInfo}
+            </div>
+          )}
+          
+          {detectedNotes.length > 0 && (
+            <div className="detected-notes">
+              <span className="notes-label">Notas:</span>
+              <span className="notes-display">
+                {noteDetectorRef.current.formatNotes(detectedNotes)}
+              </span>
+            </div>
+          )}
+        </div>
       </div>
 
-      {/*
-      Secção que mostra o estado atual da aplicação e algumas mensagens ao utilizador, como 
-      o aviso de notas graves tocadas e as notas finais detetadas.
-      */}
-      <div className="status" style={{ width: "100%", textAlign: "center" }}>
-        <p>Status: {status}</p>
-        {isRecording && <p>A gravar: {recordingDuration.toFixed(1)}s</p>}
-        {progress > 0 && progress < 1 && (
-          <p>A processar: {Math.round(progress * 100)}%</p>
-        )}
-        {warningInfo && <p className="warning-info">{warningInfo}</p>}
-        {detectedNotes.length > 0 && (
-          <div>
-            <p>Notas: {noteDetectorRef.current.formatNotes(detectedNotes)}</p>
-          </div>
-        )}
+      {/* Controles modernos */}
+      <div className="controls-modern">
+        <ModernButton
+          onClick={startRecording}
+          disabled={isRecording || isAnalyzing}
+          icon={mdiMicrophone}
+          variant="primary"
+        >
+          Gravar
+        </ModernButton>
+        
+        <ModernButton
+          onClick={stopRecording}
+          disabled={!isRecording || isAnalyzing}
+          icon={mdiStop}
+          variant="secondary"
+        >
+          Parar Gravação
+        </ModernButton>
+        
+        <ModernButton
+          onClick={analyzeRecording}
+          disabled={isRecording || !recordingComplete || isAnalyzing}
+          icon={mdiChartLine}
+          variant="success"
+        >
+          Analisar
+        </ModernButton>
+        
+        <ModernButton
+          onClick={playRecording}
+          disabled={isRecording || !recordingComplete || isAnalyzing}
+          icon={mdiPlay}
+          variant="primary"
+        >
+          Ouvir Gravação
+        </ModernButton>
+        
+        <ModernButton
+          onClick={openHistoryModal}
+          disabled={false}
+          icon={mdiHistory}
+          variant="secondary"
+        >
+          Ver Histórico
+        </ModernButton>
       </div>
+
       {/* Mostra o teclado virtual que vai mostrar as notas tocadas pelo utilizador */}
-      <div
-        style={{
-          width: "100%",
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
-          marginTop: "20px",
-        }}
-      >
+      <div className="piano-container">
         <div
           className="piano-keyboard"
           style={{
@@ -334,6 +415,7 @@ const PianoDetector = () => {
           ))}
         </div>
       </div>
+      
       {detectedNotes.length > 0 && (
         <GeminiComponent 
           ref={geminiComponentRef}

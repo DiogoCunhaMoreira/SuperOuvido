@@ -1,4 +1,7 @@
 import React, { useState } from 'react';
+import Icon from '@mdi/react';
+import { mdiMagnify, mdiDelete, mdiMusicNote, mdiClockOutline } from '@mdi/js';
+import './HistoryView.css';
 
 function HistoryView({ 
   searchHistory, 
@@ -32,142 +35,85 @@ function HistoryView({
   );
 
   return (
-    <div className="search-history">
-      <div style={{ marginBottom: '20px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-        <input 
-          type="text" 
-          placeholder="Pesquisar no histórico..." 
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
-          style={{
-            flex: 1,
-            padding: '10px 15px',
-            borderRadius: '8px',
-            border: '1px solid #ddd',
-            fontSize: '14px',
-            backgroundColor: '#f9f9f9'
-          }}
-        />
+    <div className="search-history-modern">
+      <div className="search-controls">
+        <div className="search-input-container">
+          <Icon path={mdiMagnify} size={0.9} className="search-icon" />
+          <input 
+            type="text" 
+            placeholder="Pesquisar no histórico..." 
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            className="search-input"
+          />
+        </div>
         <button 
           onClick={onClearHistory} 
-          style={{ 
-            marginLeft: '10px',
-            fontSize: '0.85rem', 
-            padding: '10px 15px',
-            border: 'none',
-            backgroundColor: '#f44336',
-            color: 'white',
-            borderRadius: '4px',
-            cursor: 'pointer',
-            transition: 'background-color 0.2s'
-          }}
-          onMouseOver={(e) => e.currentTarget.style.backgroundColor = "#d32f2f"}
-          onMouseOut={(e) => e.currentTarget.style.backgroundColor = "#f44336"}
+          className="clear-button"
         >
+          <Icon path={mdiDelete} size={0.8} />
           Limpar histórico
         </button>
       </div>
 
       {filteredHistory.length > 0 ? (
-        Object.entries(groupByDate(filteredHistory)).map(([date, items]) => (
-          <div key={date} style={{ marginBottom: '20px' }}>
-            <h5 style={{ 
-              margin: '15px 0 10px 0',
-              color: '#666',
-              borderBottom: '1px dashed #eee',
-              paddingBottom: '5px' 
-            }}>
-              {formatDate(date)}
-            </h5>
-            {items.map((item) => (
-              <div 
-                key={item.id}
-                onClick={() => onSelectItem(item)}
-                style={{ 
-                  padding: '15px', 
-                  margin: '12px 0', 
-                  border: 'none',
-                  borderRadius: '8px',
-                  backgroundColor: '#f5f9ff',
-                  cursor: 'pointer',
-                  transition: 'all 0.3s ease',
-                  boxShadow: '0 2px 6px rgba(0,0,0,0.05)',
-                  display: 'flex',
-                  flexDirection: 'column',
-                  position: 'relative',
-                  overflow: 'hidden'
-                }}
-                onMouseOver={(e) => {
-                  e.currentTarget.style.backgroundColor = "#e3f2fd";
-                  e.currentTarget.style.transform = "translateY(-2px)";
-                  e.currentTarget.style.boxShadow = "0 4px 10px rgba(0,0,0,0.1)";
-                }}
-                onMouseOut={(e) => {
-                  e.currentTarget.style.backgroundColor = "#f5f9ff";
-                  e.currentTarget.style.transform = "translateY(0)";
-                  e.currentTarget.style.boxShadow = "0 2px 6px rgba(0,0,0,0.05)";
-                }}
-              >
-                <div style={{ 
-                  position: 'absolute',
-                  left: '0',
-                  top: '0',
-                  bottom: '0',
-                  width: '5px',
-                  background: 'linear-gradient(180deg, #4CAF50, #2196F3)'
-                }}></div>
-                
-                <div style={{ 
-                  display: 'flex', 
-                  justifyContent: 'space-between', 
-                  alignItems: 'center',
-                  marginLeft: '8px' 
-                }}>
-                  <p style={{ 
-                    fontSize: '18px', 
-                    fontWeight: 'bold', 
-                    margin: '0 0 6px 0',
-                    color: '#333'
-                  }}>{item.formattedNotes}</p>
-                  <span style={{ 
-                    fontSize: '0.8rem', 
-                    color: '#777',
-                    backgroundColor: '#e0e0e0',
-                    padding: '3px 8px',
-                    borderRadius: '12px'
-                  }}>
-                    {new Date(item.timestamp).toLocaleTimeString()} 
-                  </span>
+        <div className="history-content">
+          {Object.entries(groupByDate(filteredHistory)).map(([date, items]) => (
+            <div key={date} className="date-group">
+              <h5 className="date-header">
+                <Icon path={mdiClockOutline} size={0.8} />
+                {formatDate(date)}
+              </h5>
+              {items.map((item) => (
+                <div 
+                  key={item.id}
+                  onClick={() => onSelectItem(item)}
+                  className="history-item"
+                >
+                  <div className="item-accent"></div>
+                  
+                  <div className="item-content">
+                    <div className="item-header">
+                      <div className="item-title">
+                        <Icon path={mdiMusicNote} size={0.9} />
+                        <span className="notes-text">{item.formattedNotes}</span>
+                      </div>
+                      <span className="item-time">
+                        {new Date(item.timestamp).toLocaleTimeString('pt-PT', {
+                          hour: '2-digit',
+                          minute: '2-digit'
+                        })} 
+                      </span>
+                    </div>
+                    
+                    <div className="notes-badges">
+                      {item.formattedNotes.split(', ').map((note, idx) => (
+                        <span key={idx} className="note-badge">
+                          {note}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
                 </div>
-                
-                <div style={{ 
-                  display: 'flex', 
-                  flexWrap: 'wrap', 
-                  marginTop: '8px',
-                  marginLeft: '8px'
-                }}>
-                  {item.formattedNotes.split(', ').map((note, idx) => (
-                    <span key={idx} style={{
-                      display: 'inline-block',
-                      padding: '4px 8px',
-                      margin: '0 4px 4px 0',
-                      backgroundColor: '#e3f2fd',
-                      color: '#0d47a1',
-                      borderRadius: '4px',
-                      fontSize: '0.9rem'
-                    }}>
-                      {note}
-                    </span>
-                  ))}
-                </div>
-              </div>
-            ))}
-          </div>
-        ))
+              ))}
+            </div>
+          ))}
+        </div>
       ) : (
-        <p style={{ marginTop: '10px', fontStyle: 'italic', textAlign: 'center' }}>
-          {searchTerm ? "Nenhum resultado encontrado." : "Nenhuma análise no histórico."}
-        </p>
+        <div className="empty-state">
+          <Icon path={mdiMusicNote} size={2} className="empty-icon" />
+          <p className="empty-message">
+            {searchTerm ? "Nenhum resultado encontrado." : "Nenhuma análise no histórico."}
+          </p>
+          {searchTerm && (
+            <button 
+              onClick={() => setSearchTerm('')}
+              className="clear-search-button"
+            >
+              Limpar pesquisa
+            </button>
+          )}
+        </div>
       )}
     </div>
   );

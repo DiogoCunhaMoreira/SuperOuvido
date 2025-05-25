@@ -1,273 +1,704 @@
-.piano-detector {
-    display: flex;
+.piano-detector-modern {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 0;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+/* Card de status moderno */
+.status-card {
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.95), rgba(255, 255, 255, 0.8));
+  backdrop-filter: blur(20px);
+  border-radius: 20px;
+  padding: 24px;
+  margin-bottom: 24px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  width: 100%;
+  max-width: 800px;
+}
+
+.status-header {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  margin-bottom: 16px;
+  color: #2d3748;
+}
+
+.status-header h2 {
+  margin: 0;
+  font-size: 1.5rem;
+  font-weight: 700;
+  background: linear-gradient(135deg, #667eea, #764ba2);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.status-content {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.status-item {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.status-label {
+  font-weight: 600;
+  color: #4a5568;
+}
+
+.status-value {
+  padding: 4px 12px;
+  border-radius: 12px;
+  font-size: 0.875rem;
+  font-weight: 500;
+}
+
+.status-info { background: #e6fffa; color: #234e52; }
+.status-success { background: #f0fff4; color: #22543d; }
+.status-error { background: #fed7d7; color: #742a2a; }
+.status-processing { background: #ebf8ff; color: #2a4365; }
+
+/* Indicador de gravação */
+.recording-indicator {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #e53e3e;
+  font-weight: 600;
+}
+
+.pulse-dot {
+  width: 8px;
+  height: 8px;
+  background: #e53e3e;
+  border-radius: 50%;
+  animation: pulse 1.5s infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.3; }
+}
+
+/* Barra de progresso */
+.progress-container {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.progress-bar {
+  width: 100%;
+  height: 8px;
+  background: #e2e8f0;
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #4facfe, #00f2fe);
+  border-radius: 4px;
+  transition: width 0.3s ease;
+}
+
+.progress-text {
+  font-size: 0.875rem;
+  color: #4a5568;
+  font-weight: 500;
+}
+
+/* Warning card */
+.warning-card {
+  background: linear-gradient(135deg, #fed7d7, #feb2b2);
+  color: #742a2a;
+  padding: 12px 16px;
+  border-radius: 12px;
+  font-weight: 500;
+  border-left: 4px solid #e53e3e;
+}
+
+/* Detected notes display */
+.detected-notes {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.notes-label {
+  font-weight: 600;
+  color: #4a5568;
+}
+
+.notes-display {
+  padding: 8px 16px;
+  background: linear-gradient(135deg, #e6fffa, #b2f5ea);
+  color: #234e52;
+  border-radius: 12px;
+  font-weight: 500;
+  font-size: 0.875rem;
+}
+
+/* Controles modernos */
+.controls-modern {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-bottom: 32px;
+  padding: 20px;
+  background: rgba(255, 255, 255, 0.8);
+  backdrop-filter: blur(10px);
+  border-radius: 20px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+}
+
+/* Piano container */
+.piano-container {
+  background: linear-gradient(135deg, #f7fafc, #edf2f7);
+  padding: 24px;
+  border-radius: 20px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+  margin-bottom: 24px;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.piano-keyboard {
+  display: flex;
+  position: relative;
+  width: 100%;
+  height: 200px;
+  overflow-x: auto;
+  justify-content: center;
+  padding: 0 20px;
+}
+
+.piano-key {
+  position: relative;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  padding-bottom: 10px;
+  box-sizing: border-box;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  cursor: pointer;
+}
+
+.white-key {
+  width: 40px;
+  height: 200px;
+  background: linear-gradient(135deg, #ffffff, #f7fafc);
+  border: 2px solid #e2e8f0;
+  z-index: 1;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.white-key:hover {
+  background: linear-gradient(135deg, #f7fafc, #edf2f7);
+  transform: scale(1.02);
+}
+
+.black-key {
+  width: 30px;
+  height: 120px;
+  background: linear-gradient(135deg, #2d3748, #1a202c);
+  margin-left: -15px;
+  margin-right: -15px;
+  z-index: 2;
+  color: white;
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+}
+
+.black-key:hover {
+  background: linear-gradient(135deg, #4a5568, #2d3748);
+  transform: scale(1.05);
+}
+
+.active {
+  background: linear-gradient(135deg, #4facfe, #00f2fe) !important;
+  color: white;
+  transform: scale(1.1);
+  box-shadow: 0 8px 20px rgba(79, 172, 254, 0.4);
+}
+
+.black-key.active {
+  background: linear-gradient(135deg, #667eea, #764ba2) !important;
+  box-shadow: 0 8px 20px rgba(102, 126, 234, 0.4);
+}
+
+.note-name {
+  font-size: 11px;
+  font-weight: 600;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+.controls {
+  margin-bottom: 20px;
+}
+
+button {
+  padding: 10px 15px;
+  margin: 0 10px;
+  background-color: #4CAF50;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 16px;
+}
+
+button:disabled {
+  background-color: #cccccc;
+  cursor: not-allowed;
+}
+
+.status {
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+/* Estilos para o painel de opções */
+.options-panel {
+  width: 100%;
+  max-width: 600px;
+  margin-bottom: 20px;
+  background-color: #f9f9f9;
+  border-radius: 8px;
+  border: 1px solid #e0e0e0;
+  padding: 15px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.options-section {
+  margin-bottom: 15px;
+}
+
+.options-section:last-child {
+  margin-bottom: 0;
+}
+
+.options-label {
+  font-weight: bold;
+  margin-bottom: 10px;
+  font-size: 16px;
+  color: #333;
+}
+
+.options-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  justify-content: center;
+}
+
+.option-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  background-color: white;
+  padding: 10px;
+  border-radius: 6px;
+  border: 2px solid #e0e0e0;
+  cursor: pointer;
+  flex: 1;
+  min-width: 100px;
+  max-width: 150px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  transition: all 0.2s ease;
+}
+
+.option-item:hover {
+  border-color: #bdbdbd;
+}
+
+.option-item.selected {
+  border-color: #4CAF50;
+  background-color: #f1f8e9;
+}
+
+.option-item input {
+  position: absolute;
+  opacity: 0;
+  cursor: pointer;
+  height: 0;
+  width: 0;
+}
+
+.option-name {
+  font-weight: bold;
+  margin-bottom: 5px;
+  font-size: 15px;
+  color: #333;
+}
+
+.option-description {
+  font-size: 12px;
+  color: #666;
+}
+
+/* Visual para o registo do piano */
+.options-section:nth-child(2) .option-item {
+  position: relative;
+  overflow: hidden;
+}
+
+.options-section:nth-child(2) .option-item::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  z-index: 1;
+}
+
+.options-section:nth-child(2) .option-item:nth-child(1)::after {
+  background-color: #003366;
+}
+
+.options-section:nth-child(2) .option-item:nth-child(2)::after {
+  background-color: #4CAF50;
+}
+
+.options-section:nth-child(2) .option-item:nth-child(3)::after {
+  background-color: #FF5722;
+}
+
+/* Estilo para a exibição do acorde */
+.chord-display {
+  margin: 20px 0;
+  padding: 25px;
+  background-color: #e3f2fd;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  text-align: center;
+  min-width: 250px;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Estilos diferentes baseados no tipo de acorde */
+.chord-display::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 6px;
+  height: 100%;
+}
+
+.chord-display:has(.chord-type:contains('Tríade'))::before {
+  background-color: #4CAF50;
+}
+
+.chord-display:has(.chord-type:contains('Sétima'))::before {
+  background-color: #2196F3;
+}
+
+.chord-display:has(.chord-type:contains('Estendido'))::before {
+  background-color: #9C27B0;
+}
+
+.chord-name {
+  font-size: 42px;
+  font-weight: bold;
+  color: #2962ff;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+/* Estilos diferentes para diferentes tipos de acordes */
+.chord-display:has(.chord-type:contains('Estendido')) .chord-name {
+  color: #9C27B0;
+  background: linear-gradient(45deg, #9C27B0, #3F51B5);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.chord-display:has(.chord-type:contains('Sétima')) .chord-name {
+  color: #2196F3;
+}
+
+.chord-type {
+  margin-top: 5px;
+  font-size: 14px;
+  font-weight: normal;
+  color: #666;
+}
+
+.debug-info {
+  font-size: 12px;
+  color: #666;
+  font-style: italic;
+  margin-top: 10px;
+}
+
+/* Responsivo */
+@media (max-width: 768px) {
+  .controls-modern {
     flex-direction: column;
     align-items: center;
+  }
+  
+  .status-card {
+    margin: 0 16px 24px;
     padding: 20px;
-    font-family: Arial, sans-serif;
-  }
-  
-  .controls {
-    margin-bottom: 20px;
-  }
-  
-  button {
-    padding: 10px 15px;
-    margin: 0 10px;
-    background-color: #4CAF50;
-    color: white;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    font-size: 16px;
-  }
-  
-  button:disabled {
-    background-color: #cccccc;
-    cursor: not-allowed;
-  }
-  
-  .status {
-    margin-bottom: 20px;
-    text-align: center;
   }
   
   .piano-keyboard {
-    display: flex;
-    position: relative;
-    width: 100%;
-    height: 200px;
-    overflow-x: auto;
-  }
-  
-  .piano-key {
-    position: relative;
-    display: flex;
-    align-items: flex-end;
-    justify-content: center;
-    padding-bottom: 10px;
-    box-sizing: border-box;
-    transition: background-color 0.1s ease;
+    padding: 0 10px;
   }
   
   .white-key {
-    width: 40px;
-    height: 200px;
-    background-color: white;
-    border: 1px solid #ccc;
-    z-index: 1;
+    width: 35px;
   }
   
   .black-key {
-    width: 30px;
-    height: 120px;
-    background-color: black;
-    margin-left: -15px;
-    margin-right: -15px;
-    z-index: 2;
-    color: white;
-  }
-  
-  .active {
-    background-color: #91d4ff;
-  }
-  
-  .black-key.active {
-    background-color: #2196F3;
-  }
-  
-  .note-name {
-    font-size: 12px;
-  }
-  
-  /* Estilos para o painel de opções */
-  .options-panel {
-    width: 100%;
-    max-width: 600px;
-    margin-bottom: 20px;
-    background-color: #f9f9f9;
-    border-radius: 8px;
-    border: 1px solid #e0e0e0;
-    padding: 15px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
-  }
-  
-  .options-section {
-    margin-bottom: 15px;
-  }
-  
-  .options-section:last-child {
-    margin-bottom: 0;
-  }
-  
-  .options-label {
-    font-weight: bold;
-    margin-bottom: 10px;
-    font-size: 16px;
-    color: #333;
+    width: 25px;
   }
   
   .options-container {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 10px;
-    justify-content: center;
+    flex-direction: column;
+    align-items: center;
   }
   
   .option-item {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    text-align: center;
-    background-color: white;
-    padding: 10px;
-    border-radius: 6px;
-    border: 2px solid #e0e0e0;
-    cursor: pointer;
-    flex: 1;
-    min-width: 100px;
-    max-width: 150px;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-    transition: all 0.2s ease;
-  }
-  
-  .option-item:hover {
-    border-color: #bdbdbd;
-  }
-  
-  .option-item.selected {
-    border-color: #4CAF50;
-    background-color: #f1f8e9;
-  }
-  
-  .option-item input {
-    position: absolute;
-    opacity: 0;
-    cursor: pointer;
-    height: 0;
-    width: 0;
-  }
-  
-  .option-name {
-    font-weight: bold;
-    margin-bottom: 5px;
-    font-size: 15px;
-    color: #333;
-  }
-  
-  .option-description {
-    font-size: 12px;
-    color: #666;
-  }
-  
-  /* Visual para o registo do piano */
-  .options-section:nth-child(2) .option-item {
-    position: relative;
-    overflow: hidden;
-  }
-  
-  .options-section:nth-child(2) .option-item::after {
-    content: "";
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    height: 4px;
-    z-index: 1;
-  }
-  
-  .options-section:nth-child(2) .option-item:nth-child(1)::after {
-    background-color: #003366; /* Azul escuro para graves */
-  }
-  
-  .options-section:nth-child(2) .option-item:nth-child(2)::after {
-    background-color: #4CAF50; /* Verde para médios */
-  }
-  
-  .options-section:nth-child(2) .option-item:nth-child(3)::after {
-    background-color: #FF5722; /* Laranja/vermelho para agudos */
-  }
-  
-  /* Estilo para a exibição do acorde */
-  .chord-display {
-    margin: 20px 0;
-    padding: 25px;
-    background-color: #e3f2fd;
-    border-radius: 10px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    text-align: center;
-    min-width: 250px;
-    position: relative;
-    overflow: hidden;
-  }
-  
-  /* Estilos diferentes baseados no tipo de acorde */
-  .chord-display::before {
-    content: "";
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 6px;
-    height: 100%;
-  }
-  
-  .chord-display:has(.chord-type:contains('Tríade'))::before {
-    background-color: #4CAF50; /* Verde para tríades */
-  }
-  
-  .chord-display:has(.chord-type:contains('Sétima'))::before {
-    background-color: #2196F3; /* Azul para acordes de sétima */
-  }
-  
-  .chord-display:has(.chord-type:contains('Estendido'))::before {
-    background-color: #9C27B0; /* Roxo para acordes estendidos */
+    width: 100%;
+    max-width: 100%;
   }
   
   .chord-name {
-    font-size: 42px;
-    font-weight: bold;
-    color: #2962ff;
-    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
+    font-size: 32px;
   }
-  
-  /* Estilos diferentes para diferentes tipos de acordes */
-  .chord-display:has(.chord-type:contains('Estendido')) .chord-name {
-    color: #9C27B0; /* Roxo para acordes estendidos */
-    background: linear-gradient(45deg, #9C27B0, #3F51B5);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
+}
+
+/* Accordion para notas detectadas */
+.notes-accordion {
+  border: 1px solid rgba(102, 126, 234, 0.2);
+  border-radius: 12px;
+  overflow: hidden;
+  background: rgba(255, 255, 255, 0.6);
+  backdrop-filter: blur(10px);
+}
+
+.accordion-header {
+  width: 100%;
+  padding: 12px 16px;
+  background: none;
+  border: none;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  color: #4a5568;
+  font-weight: 600;
+}
+
+.accordion-header:hover {
+  background: rgba(102, 126, 234, 0.05);
+}
+
+.accordion-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.accordion-icon {
+  transition: transform 0.3s ease;
+  color: #667eea;
+}
+
+.accordion-content {
+  padding: 0 16px 16px 16px;
+  animation: slideDown 0.3s ease-out;
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
   }
-  
-  .chord-display:has(.chord-type:contains('Sétima')) .chord-name {
-    color: #2196F3; /* Azul para acordes de sétima */
+  to {
+    opacity: 1;
+    transform: translateY(0);
   }
-  
-  .chord-type {
-    margin-top: 5px;
-    font-size: 14px;
-    font-weight: normal;
-    color: #666;
+}
+
+.detected-notes {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.notes-display {
+  padding: 8px 16px;
+  background: linear-gradient(135deg, #e6fffa, #b2f5ea);
+  color: #234e52;
+  border-radius: 12px;
+  font-weight: 500;
+  font-size: 0.875rem;
+}
+
+/* Accordion moderno para análise musical */
+.gemini-response-modern {
+  margin: 20px 0;
+  width: 100%;
+  max-width: 800px;
+}
+
+.analysis-accordion {
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.95), rgba(255, 255, 255, 0.8));
+  backdrop-filter: blur(20px);
+  border-radius: 20px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  overflow: hidden;
+}
+
+.analysis-accordion-header {
+  width: 100%;
+  padding: 20px 24px;
+  background: none;
+  border: none;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  color: #2d3748;
+}
+
+.analysis-accordion-header:hover {
+  background: linear-gradient(135deg, rgba(102, 126, 234, 0.05), rgba(118, 75, 162, 0.05));
+}
+
+.analysis-accordion-title {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex: 1;
+}
+
+.analysis-accordion-title span:first-of-type {
+  font-size: 1.25rem;
+  font-weight: 700;
+  background: linear-gradient(135deg, #667eea, #764ba2);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.notes-preview {
+  font-size: 0.875rem !important;
+  font-weight: 500 !important;
+  color: #718096 !important;
+  background: rgba(102, 126, 234, 0.1) !important;
+  padding: 4px 8px !important;
+  border-radius: 8px !important;
+  -webkit-background-clip: initial !important;
+  -webkit-text-fill-color: initial !important;
+}
+
+.analysis-accordion-icon {
+  transition: transform 0.3s ease;
+  color: #667eea;
+}
+
+.analysis-accordion-content {
+  padding: 0 24px 24px 24px;
+  animation: slideDown 0.3s ease-out;
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
   }
-  
-  .debug-info {
-    font-size: 12px;
-    color: #666;
-    font-style: italic;
-    margin-top: 10px;
+  to {
+    opacity: 1;
+    transform: translateY(0);
   }
-  
-  /* Adaptações responsivas */
-  @media (max-width: 600px) {
-    .options-container {
-      flex-direction: column;
-      align-items: center;
-    }
-    
-    .option-item {
-      width: 100%;
-      max-width: 100%;
-    }
-    
-    .chord-name {
-      font-size: 32px;
-    }
-  }
+}
+
+.loading-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 40px 20px;
+  color: #667eea;
+  gap: 16px;
+}
+
+.loading-icon {
+  animation: spin 2s linear infinite;
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.error-state {
+  color: #e53e3e;
+  background: linear-gradient(135deg, #fed7d7, #feb2b2);
+  padding: 16px;
+  border-radius: 12px;
+  font-weight: 500;
+  border-left: 4px solid #e53e3e;
+}
+
+.api-key-error {
+  color: #e53e3e;
+  background: linear-gradient(135deg, #fed7d7, #feb2b2);
+  padding: 16px;
+  border-radius: 12px;
+  font-weight: 500;
+  margin: 0;
+}
+
+.markdown-response {
+  background: rgba(255, 255, 255, 0.6);
+  border-radius: 12px;
+  padding: 20px;
+  border: 1px solid rgba(102, 126, 234, 0.1);
+}
+
+.markdown-response h1,
+.markdown-response h2,
+.markdown-response h3 {
+  background: linear-gradient(135deg, #667eea, #764ba2);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.markdown-response ul, 
+.markdown-response ol {
+  color: #4a5568;
+}
+
+.markdown-response li {
+  margin-bottom: 8px;
+}
+
+.markdown-response p {
+  color: #2d3748;
+  line-height: 1.6;
+}

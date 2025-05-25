@@ -1,5 +1,7 @@
 .App {
   text-align: center;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  min-height: 100vh;
 }
 
 .App-logo {
@@ -14,14 +16,28 @@
 }
 
 .App-header {
-  background-color: #282c34;
-  min-height: 40vh;
+  background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+  min-height: 25vh;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   font-size: calc(10px + 2vmin);
   color: white;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+  position: relative;
+  overflow: hidden;
+}
+
+.App-header::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: url('data:image/svg+xml,<svg width="60" height="60" viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg"><g fill="none" fill-rule="evenodd"><g fill="%23ffffff" fill-opacity="0.05"><path d="m36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z"/></g></g></svg>') repeat;
+  opacity: 0.1;
 }
 
 .App-link {
@@ -29,9 +45,25 @@
 }
 
 .logo-image {
-  height: 40vh;
+  height: 20vh;
   width: auto;
   object-fit: contain;
+  filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.3));
+  transition: transform 0.3s ease;
+  z-index: 1;
+}
+
+.logo-image:hover {
+  transform: scale(1.05);
+}
+
+main {
+  padding: 2rem;
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(10px);
+  border-radius: 20px 20px 0 0;
+  margin-top: -10px;
+  box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.1);
 }
 
 @keyframes App-logo-spin {
