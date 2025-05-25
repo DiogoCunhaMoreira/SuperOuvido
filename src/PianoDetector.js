@@ -8,7 +8,6 @@ import {
   mdiHistory,
   mdiMusicNote
 } from '@mdi/js';
-import { BasicPitch } from "@spotify/basic-pitch";
 import "./PianoDetector.css";
 import GeminiComponent from "./GeminiComponent";
 import AudioService from "./AudioService";
@@ -44,6 +43,8 @@ const PianoDetector = () => {
   const audioServiceRef = useRef(new AudioService());
   const noteDetectorRef = useRef(new NoteDetector());
   const geminiComponentRef = useRef(null);
+  const timerRef = useRef(null);
+  const durationRef = useRef(null);
   const allNotes = noteDetectorRef.current.getAllNotes();
 
   // Subscribe to history store changes
@@ -88,6 +89,9 @@ const PianoDetector = () => {
   */
   useEffect(() => {
     return () => {
+      if (timerRef.current) {
+        clearInterval(timerRef.current);
+      }
       audioServiceRef.current.cleanup();
     };
   }, []);
@@ -121,13 +125,21 @@ const PianoDetector = () => {
       await audioServiceRef.current.startRecording(
         setStatus,
         setIsRecording,
-        setRecordingDuration,
         setActiveNotes,
         setDetectedNotes,
         setRecordingComplete,
         setRecordedAudio,
         setWarningInfo
       );
+
+      const startTime = Date.now();
+      timerRef.current = setInterval(() => {
+        const duration = (Date.now() - startTime) / 1000;
+        if (durationRef.current) {
+          durationRef.current.textContent = `${duration.toFixed(1)}s`;
+        }
+      }, 100);
+
     } catch (error) {
       console.error("Erro ao começar a gravação:", error);
       setStatus(`Erro ao acessar o microfone: ${error.message}`);
@@ -136,7 +148,13 @@ const PianoDetector = () => {
 
   // Função responsável por terminar o processo de gravação.
   const stopRecording = () => {
-    audioServiceRef.current.stopRecording(setIsRecording);
+    if (isRecording) {
+      if (timerRef.current) {
+        clearInterval(timerRef.current);
+        timerRef.current = null;
+      }
+      audioServiceRef.current.stopRecording(setIsRecording);
+    }
   };
 
   /* 
@@ -307,7 +325,7 @@ const PianoDetector = () => {
           {isRecording && (
             <div className="recording-indicator">
               <div className="pulse-dot"></div>
-              <span>Gravando: {recordingDuration.toFixed(1)}s</span>
+              <span>Gravando: <span ref={durationRef}>0.0s</span></span>
             </div>
           )}
           
