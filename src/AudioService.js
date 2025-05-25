@@ -7,31 +7,31 @@ class AudioService {
     this.audioChunks = [];
     this.recordingStartTime = null;
     this.recordingTimer = null;
+    this.MAX_RECORDING_TIME = 10000;
   }
 
-  /*  
-    O BasicPitch dava o seguinte erro:
-    "Input audio buffer is not at correct sample rate! Is 44100. Should be 22050"
-    Foi necessário criar uma função para fazer o resample do audio para 22050Hz.
-    */
+  /*
+  O BasicPitch dava o seguinte erro:
+  "Input audio buffer is not at correct sample rate! Is 44100. Should be 22050"
+  Foi necessário criar uma função para fazer o resample do audio para 22050Hz.
+  */
   async resampleAudio(audioBuffer) {
-    /* 
-      Cria um contexto de áudio offline mono (1 canal), com um comprimento obtido pela multiplicação da duração
-      do buffer original pela sample rate de 22050 Hz, utilizando a mesma também para definir a sample rate deste contexto de audio.
-      */
+    /*
+    Cria um contexto de áudio offline mono (1 canal), com um comprimento obtido pela multiplicação da duração
+    do buffer original pela sample rate de 22050 Hz, utilizando a mesma também para definir a sample rate deste contexto de audio.
+    */
     const offlineCtx = new OfflineAudioContext(
       1,
       audioBuffer.duration * this.TARGET_SAMPLE_RATE,
       this.TARGET_SAMPLE_RATE
     );
 
-    // Cria uma buffer source para o contexto de audio offline e assigna-o ao  audioBuffer.
+    // Cria uma buffer source para o contexto de audio offline e assigna-o ao audioBuffer.
     const source = offlineCtx.createBufferSource();
     source.buffer = audioBuffer;
 
     // Conecta o buffer source ao destino, para renderização
     source.connect(offlineCtx.destination);
-
     source.start(0);
 
     // Começa a renderização do audio
@@ -42,10 +42,10 @@ class AudioService {
   }
 
   /*
-     Função que recebe um blob de audio (binary large object), converte-o para dados possíveis de processar,
-     e usa o, verifica o nível de audio, faz o resample se necessário e, por fim,  chama a função evaluateModel() do BasicPitch
-     para obtem a framesCollection que será depois usada na função detectNotes para obtenção das notas tocadas.
-    */
+  Função que recebe um blob de audio (binary large object), converte-o para dados possíveis de processar,
+  e usa o, verifica o nível de audio, faz o resample se necessário e, por fim, chama a função evaluateModel() do BasicPitch
+  para obtem a framesCollection que será depois usada na função detectNotes para obtenção das notas tocadas.
+  */
   async processAudioBlob(
     blob,
     setIsAnalyzing,
@@ -81,11 +81,10 @@ class AudioService {
       const audioBuffer = await this.audioContext.decodeAudioData(arrayBuffer);
 
       /*
-        Verifica o nível de audio nas amostras.
-        Faz uma soma do valor absoluto das amplitudes do sinal de audio e divide pelo número de amostras para 
-        obter o volume médio do sinal de audio. Se o valor for menor que 0.005, a análise é ignorada.
-        */
-
+      Verifica o nível de audio nas amostras.
+      Faz uma soma do valor absoluto das amplitudes do sinal de audio e divide pelo número de amostras para
+      obter o volume médio do sinal de audio. Se o valor for menor que 0.005, a análise é ignorada.
+      */
       const channel = audioBuffer.getChannelData(0);
       const sum = channel.reduce((acc, val) => acc + Math.abs(val), 0);
       const average = sum / channel.length;
@@ -133,16 +132,17 @@ class AudioService {
           framesCollection,
           setWarningInfo
         );
+
         if (detectedMidiNotes.length > 0) {
           setActiveNotes(detectedMidiNotes);
           // Usamos o callback com as notas detectadas
           setDetectedNotes(detectedMidiNotes);
-
           setStatus(`Análise completa`);
         } else {
           setStatus("Nenhuma nota detetada");
         }
       }
+
       setIsAnalyzing(false);
     } catch (error) {
       setStatus(`Erro ao processar o áudio: ${error.message}`);
@@ -210,15 +210,22 @@ class AudioService {
         setStatus("Gravação completa");
       });
 
-      /* 
+      /*
       Inicio da gravação
       */
       this.recorder.start();
       this.recordingStartTime = Date.now();
 
+      this.recordingTimer = setTimeout(() => {
+        if (this.recorder && this.recorder.state === 'recording') {
+          this.stopRecording(setIsRecording);
+          setStatus("Gravação parada automaticamente (limite de 10s)");
+        }
+      }, this.MAX_RECORDING_TIME);
+
       // Atualização de estados e tratamento de possíveis erros.
       setIsRecording(true);
-      setStatus("A gravar audio...");
+      setStatus("A gravar audio... (máx. 10s)");
     } catch (error) {
       console.error("Erro ao começar a gravação:", error);
       setStatus(`Erro ao aceder ao microfone: ${error.message}`);
@@ -229,7 +236,7 @@ class AudioService {
   stopRecording(setIsRecording) {
     // Termina o temporizador
     if (this.recordingTimer) {
-      clearInterval(this.recordingTimer);
+      clearTimeout(this.recordingTimer);
       this.recordingTimer = null;
     }
 
@@ -243,6 +250,7 @@ class AudioService {
       this.mediaStream.getTracks().forEach((track) => track.stop());
       this.mediaStream = null;
     }
+
     // Atualiza o estado de gravação para false.
     setIsRecording(false);
   }
@@ -259,11 +267,13 @@ class AudioService {
   // Limpa recursos de áudio
   cleanup() {
     if (this.recordingTimer) {
-      clearInterval(this.recordingTimer);
+      clearTimeout(this.recordingTimer);
     }
+
     if (this.mediaStream) {
       this.mediaStream.getTracks().forEach((track) => track.stop());
     }
+
     if (this.audioContext) {
       this.audioContext.close();
     }

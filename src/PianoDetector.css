@@ -149,6 +149,7 @@
   border-radius: 12px;
   font-weight: 500;
   font-size: 0.875rem;
+  border: none;
 }
 
 /* Controles modernos */
@@ -490,7 +491,6 @@ button:disabled {
 
 /* Accordion para notas detectadas */
 .notes-accordion {
-  border: 1px solid rgba(102, 126, 234, 0.2);
   border-radius: 12px;
   overflow: hidden;
   background: rgba(255, 255, 255, 0.6);
@@ -548,15 +548,7 @@ button:disabled {
   justify-content: center;
   gap: 8px;
   flex-wrap: wrap;
-}
-
-.notes-display {
-  padding: 8px 16px;
-  background: linear-gradient(135deg, #e6fffa, #b2f5ea);
-  color: #234e52;
-  border-radius: 12px;
-  font-weight: 500;
-  font-size: 0.875rem;
+  border: none;
 }
 
 /* Accordion moderno para análise musical */
