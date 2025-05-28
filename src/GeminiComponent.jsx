@@ -108,6 +108,7 @@ const GeminiComponent = forwardRef(({ detectedNotes = [], searchHistory = [], on
         <button 
           className="analysis-accordion-header"
           onClick={() => setIsAccordionOpen(!isAccordionOpen)}
+          disabled={!response && !loading}
         >
           <div className="analysis-accordion-title">
             <Icon path={mdiChartLine} size={1} />

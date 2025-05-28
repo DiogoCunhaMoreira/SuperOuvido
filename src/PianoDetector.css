@@ -461,14 +461,24 @@ button:disabled {
   
   .piano-keyboard {
     padding: 0 10px;
+    justify-content: center;
   }
   
   .white-key {
-    width: 35px;
+    width: 38px;
+    height: 160px;
   }
   
   .black-key {
-    width: 25px;
+    width: 26px;
+    height: 100px;
+    margin-left: -13px;
+    margin-right: -13px;
+  }
+  
+  .note-name {
+    font-size: 10px;
+    font-weight: 700;
   }
   
   .options-container {
@@ -488,32 +498,7 @@ button:disabled {
   .piano-container {
     padding: 20px 10px;
     margin-bottom: 16px;
-  }
-  
-  .piano-keyboard {
-    padding: 0;
-    overflow-x: auto;
-    overflow-y: visible;
-    scroll-snap-type: x mandatory;
-    -webkit-overflow-scrolling: touch;
-  }
-  
-  .white-key {
-    width: 45px;
-    min-width: 45px;
-    height: 150px;
-  }
-  
-  .black-key {
-    width: 30px;
-    min-width: 30px;
-    height: 90px;
-  }
-  
-  .note-name {
-    font-size: 10px;
-    font-weight: 700;
-  }
+  }  
 
   button {
     min-height: 44px;
@@ -631,18 +616,31 @@ button:disabled {
 
 
 @media (max-width: 480px) {
+
+  .piano-keyboard {
+    padding: 0 8px;
+    overflow-x: hidden;
+    overflow-y: visible;
+    justify-content: center;
+  }
+  
   .white-key {
-    width: 40px;
-    height: 120px;
+    width: 35px;
+    min-width: 35px;
+    height: 140px;
   }
   
   .black-key {
-    width: 25px;
-    height: 75px;
+    width: 24px;
+    min-width: 24px;
+    height: 90px;
+    margin-left: -12px;
+    margin-right: -12px;
   }
   
   .note-name {
     font-size: 9px;
+    font-weight: 700;
   }
 
   .controls-modern {
@@ -762,6 +760,8 @@ button:disabled {
   cursor: pointer;
   transition: all 0.3s ease;
   color: #2d3748;
+  box-sizing: border-box;
+  margin: 0;
 }
 
 .analysis-accordion-header:hover {
@@ -783,6 +783,22 @@ button:disabled {
   background-clip: text;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
+}
+
+.analysis-accordion-header:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  background: rgba(0, 0, 0, 0.05) !important;
+}
+
+.analysis-accordion-header:disabled:hover {
+  background: rgba(0, 0, 0, 0.05) !important;
+  transform: none !important;
+}
+
+.analysis-accordion-header:disabled .analysis-accordion-icon,
+.analysis-accordion-header:disabled .analysis-accordion-title span:first-of-type {
+  opacity: 0.5;
 }
 
 .notes-preview {
