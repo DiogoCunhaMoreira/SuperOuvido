@@ -453,6 +453,7 @@ button:disabled {
   }
   
   .status-card {
+    text-align: center !important;
     margin: 0 10px 20px;
     padding: 16px;
     border-radius: 16px;
@@ -558,7 +559,7 @@ button:disabled {
   
   .status-item {
     flex-direction: column;
-    align-items: flex-start;
+    align-items: center;
     gap: 4px;
   }
   
