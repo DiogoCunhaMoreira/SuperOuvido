@@ -8,7 +8,6 @@
   margin: 0 auto;
 }
 
-/* Card de status moderno */
 .status-card {
   background: linear-gradient(135deg, rgba(255, 255, 255, 0.95), rgba(255, 255, 255, 0.8));
   backdrop-filter: blur(20px);
@@ -36,6 +35,8 @@
   font-weight: 700;
   background: linear-gradient(135deg, #667eea, #764ba2);
   -webkit-background-clip: text;
+  background-clip: text;
+  background-clip: text;
   -webkit-text-fill-color: transparent;
 }
 
@@ -69,7 +70,6 @@
 .status-error { background: #fed7d7; color: #742a2a; }
 .status-processing { background: #ebf8ff; color: #2a4365; }
 
-/* Indicador de gravação */
 .recording-indicator {
   display: flex;
   align-items: center;
@@ -91,7 +91,6 @@
   50% { opacity: 0.3; }
 }
 
-/* Barra de progresso */
 .progress-container {
   display: flex;
   flex-direction: column;
@@ -119,7 +118,6 @@
   font-weight: 500;
 }
 
-/* Warning card */
 .warning-card {
   background: linear-gradient(135deg, #fed7d7, #feb2b2);
   color: #742a2a;
@@ -129,7 +127,6 @@
   border-left: 4px solid #e53e3e;
 }
 
-/* Detected notes display */
 .detected-notes {
   display: flex;
   align-items: center;
@@ -155,6 +152,7 @@
 /* Controles modernos */
 .controls-modern {
   display: flex;
+  align-items: center;
   justify-content: center;
   flex-wrap: wrap;
   gap: 12px;
@@ -166,7 +164,6 @@
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
 }
 
-/* Piano container */
 .piano-container {
   background: linear-gradient(135deg, #f7fafc, #edf2f7);
   padding: 40px; /* Aumentado de 24px para 40px */
@@ -184,11 +181,10 @@
   position: relative;
   width: 100%;
   height: 200px;
-  overflow-x: visible; /* Mudado de auto para visible */
+  overflow-x: visible;
   justify-content: center;
-  padding: 0 40px; /* Aumentado de 20px para 40px */
+  padding: 0 40px;
 }
-
 
 .piano-key {
   position: relative;
@@ -274,7 +270,6 @@ button:disabled {
   text-align: center;
 }
 
-/* Estilos para o painel de opções */
 .options-panel {
   width: 100%;
   max-width: 600px;
@@ -354,7 +349,6 @@ button:disabled {
   color: #666;
 }
 
-/* Visual para o registo do piano */
 .options-section:nth-child(2) .option-item {
   position: relative;
   overflow: hidden;
@@ -382,7 +376,6 @@ button:disabled {
   background-color: #FF5722;
 }
 
-/* Estilo para a exibição do acorde */
 .chord-display {
   margin: 20px 0;
   padding: 25px;
@@ -395,7 +388,6 @@ button:disabled {
   overflow: hidden;
 }
 
-/* Estilos diferentes baseados no tipo de acorde */
 .chord-display::before {
   content: "";
   position: absolute;
@@ -424,10 +416,10 @@ button:disabled {
   text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
 }
 
-/* Estilos diferentes para diferentes tipos de acordes */
 .chord-display:has(.chord-type:contains('Estendido')) .chord-name {
   color: #9C27B0;
   background: linear-gradient(45deg, #9C27B0, #3F51B5);
+  background-clip: text;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
 }
@@ -450,16 +442,20 @@ button:disabled {
   margin-top: 10px;
 }
 
-/* Responsivo */
 @media (max-width: 768px) {
   .controls-modern {
+    width: 100%;
+    box-sizing: border-box;
     flex-direction: column;
     align-items: center;
+    justify-content: center;
+    padding: 16px;
   }
   
   .status-card {
-    margin: 0 16px 24px;
-    padding: 20px;
+    margin: 0 10px 20px;
+    padding: 16px;
+    border-radius: 16px;
   }
   
   .piano-keyboard {
@@ -487,9 +483,197 @@ button:disabled {
   .chord-name {
     font-size: 32px;
   }
+
+  .piano-container {
+    padding: 20px 10px;
+    margin-bottom: 16px;
+  }
+  
+  .piano-keyboard {
+    padding: 0;
+    overflow-x: auto;
+    overflow-y: visible;
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+  }
+  
+  .white-key {
+    width: 45px;
+    min-width: 45px;
+    height: 150px;
+  }
+  
+  .black-key {
+    width: 30px;
+    min-width: 30px;
+    height: 90px;
+  }
+  
+  .note-name {
+    font-size: 10px;
+    font-weight: 700;
+  }
+
+  button {
+    min-height: 44px;
+    min-width: 44px;
+    padding: 12px 16px;
+  }
+  .modal-overlay {
+    padding: 10px;
+    align-items: flex-start;
+    padding-top: 20px;
+  }
+  
+  .modal-content {
+    width: 95%;
+    max-height: 90vh;
+    margin-top: 0;
+  }
+  
+  .modal-header {
+    padding: 16px 20px;
+  }
+  
+  .modal-header h2 {
+    font-size: 1.25rem;
+  }
+  
+  .modal-body {
+    padding: 16px 20px;
+  }
+  .status-card {
+    margin: 0 10px 20px;
+    padding: 16px;
+    border-radius: 16px;
+  }
+  
+  .status-header h2 {
+    font-size: 1.25rem;
+  }
+  
+  .status-content {
+    gap: 8px;
+  }
+  
+  .status-item {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 4px;
+  }
+  
+  .detected-notes {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  
+  .notes-display {
+    width: 100%;
+    text-align: center;
+    padding: 12px;
+  }
+  .search-controls {
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+  }
+  
+  .clear-button {
+    justify-content: center;
+    width: auto;
+    min-width: 160px;
+  }
+
+  .search-input-container {
+    width: 100%;
+  }
+  
+  .history-item {
+    margin-bottom: 8px;
+  }
+  
+  .item-content {
+    padding: 12px 16px;
+  }
+  
+  .notes-text {
+    font-size: 16px;
+  }
+  
+  .notes-badges {
+    gap: 4px;
+  }
+  
+  .note-badge {
+    padding: 4px 8px;
+    font-size: 12px;
+  }
+  .status-label,
+  .notes-label {
+    font-size: 14px;
+  }
+  
+  .status-value {
+    font-size: 13px;
+    padding: 6px 10px;
+  }
+  
+  .progress-text {
+    font-size: 14px;
+  }
+  
+  .warning-card {
+    font-size: 14px;
+    padding: 10px 12px;
+  }
 }
 
-/* Accordion para notas detectadas */
+
+@media (max-width: 480px) {
+  .white-key {
+    width: 40px;
+    height: 120px;
+  }
+  
+  .black-key {
+    width: 25px;
+    height: 75px;
+  }
+  
+  .note-name {
+    font-size: 9px;
+  }
+
+  .controls-modern {
+    width: 100%;
+    box-sizing: border-box;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 16px;
+  }
+  
+  .controls-modern button {
+    width: 100%;
+    max-width: 300px;
+    justify-content: center !important;
+    margin: 0 auto;
+  }
+
+  .modal-content {
+    width: 98%;
+    border-radius: 16px;
+  }
+  
+  .modal-header {
+    padding: 12px 16px;
+  }
+  
+  .modal-body {
+    padding: 12px 16px;
+  }
+}
+
 .notes-accordion {
   border-radius: 12px;
   overflow: hidden;
@@ -551,7 +735,6 @@ button:disabled {
   border: none;
 }
 
-/* Accordion moderno para análise musical */
 .gemini-response-modern {
   margin: 20px 0;
   width: 100%;
@@ -587,7 +770,7 @@ button:disabled {
 .analysis-accordion-title {
   display: flex;
   align-items: center;
-  justify-content: center; /* Adicionado para centralizar */
+  justify-content: center;
   gap: 12px;
   flex: 1;
 }
@@ -596,6 +779,7 @@ button:disabled {
   font-size: 1.25rem;
   font-weight: 700;
   background: linear-gradient(135deg, #667eea, #764ba2);
+  background-clip: text;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
 }
@@ -607,6 +791,7 @@ button:disabled {
   background: rgba(102, 126, 234, 0.1) !important;
   padding: 4px 8px !important;
   border-radius: 8px !important;
+  background-clip: text;
   -webkit-background-clip: initial !important;
   -webkit-text-fill-color: initial !important;
 }
@@ -680,6 +865,7 @@ button:disabled {
 .markdown-response h3 {
   background: linear-gradient(135deg, #667eea, #764ba2);
   -webkit-background-clip: text;
+  background-clip: text;
   -webkit-text-fill-color: transparent;
 }
 

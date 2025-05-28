@@ -281,11 +281,14 @@ const PianoDetector = () => {
           cursor: disabled ? 'not-allowed' : 'pointer',
           display: 'flex',
           alignItems: 'center',
+          justifyContent: 'center',
           gap: '8px',
           fontWeight: '600',
           transition: 'all 0.3s ease',
           boxShadow: disabled ? 'none' : '0 4px 12px rgba(0, 0, 0, 0.15)',
           transform: disabled ? 'none' : 'translateY(0)',
+          minHeight: '44px',
+          touchAction: 'manipulation',
           ...sizes[size]
         }}
         onMouseOver={(e) => {
