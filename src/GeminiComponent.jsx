@@ -64,7 +64,29 @@ const GeminiComponent = forwardRef(({ detectedNotes = [], searchHistory = [], on
    */
   const createPrompt = (notes) => {
     const formattedNotes = formatNotes(notes);
-    return `Analisei estas notas musicais: ${formattedNotes}. Diz-me qual acorde isso poderia formar, quais as escalas a que estas notas pertencem, e sugere algumas progressões harmónicas possíveis baseadas neste conjunto de notas. Formata a tua resposta com Markdown, usando títulos, listas e secções para melhor legibilidade. A resposta deve ser dada em pt pt. Atenção aos acentos e diferenças entre Português de Portugal e Português do Brasil.`;
+    return `NOTAS TOCADAS: ${formattedNotes}
+    
+    ## Identificação Harmónica
+    Identifica que acorde ou acordes estas notas podem formar. Se as notas não formarem um acorde convencional, explica que tipo de sonoridade criam (cluster, intervalo dissonante, etc.).
+    
+    ## Análise Intervalar
+    Descreve os intervalos presentes entre as diferentes notas e o que estes intervalos contribuem para a sonoridade geral.
+    
+    ## Contexto Tonal
+    Explica em que tonalidades ou escalas estas notas fazem mais sentido. Menciona se sugerem um modo específico ou se têm uma função harmónica particular em determinadas tonalidades.
+    
+    ## Carácter Sonoro
+    Descreve o carácter emocional e a qualidade sonora desta combinação de notas - se é consonante ou dissonante, estável ou instável, e que tipo de atmosfera musical cria.
+    
+    ## Aplicações Musicais
+    Fornece exemplos de como estas notas são tipicamente usadas em diferentes estilos musicais e sugere possíveis resoluções ou desenvolvimentos harmónicos.
+    
+    INSTRUÇÕES CRÍTICAS:
+    - Responde DIRETAMENTE com a análise sem introduções como "Claro", "Com certeza", "Vamos analisar", etc.
+    - USA APENAS português de Portugal (não do Brasil)
+    - NÃO uses listas com bullet points ou hífens
+    - Escreve SEMPRE em parágrafos completos e fluidos
+    - Formata em markdown mantendo os títulos das secções exactamente como estão acima`;
   };
 
   /*
