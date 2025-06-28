@@ -15,7 +15,7 @@ if (!apiKeyFromEnv) {
   console.error("Erro: Private key não encontrada");
 } else {
   genAI = new GoogleGenerativeAI(apiKeyFromEnv);
-  model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+  model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
 }
 
 /*
