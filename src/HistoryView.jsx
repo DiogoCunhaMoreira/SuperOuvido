@@ -1,13 +1,16 @@
 import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import Icon from '@mdi/react';
 import { mdiMagnify, mdiDelete, mdiMusicNote, mdiClockOutline } from '@mdi/js';
 import './HistoryView.css';
 
-function HistoryView({ 
-  searchHistory, 
-  onSelectItem, 
-  onClearHistory 
+function HistoryView({
+  searchHistory,
+  onSelectItem,
+  onClearHistory
 }) {
+  const { t, i18n } = useTranslation();
+  const locale = (i18n.language || 'pt').toLowerCase().startsWith('en') ? 'en-US' : 'pt-PT';
   const [searchTerm, setSearchTerm] = useState('');
 
   // Agrupar itens por data para exibição organizada
@@ -26,7 +29,7 @@ function HistoryView({
   // Formatar data para exibição
   const formatDate = (dateString) => {
     const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
-    return new Date(dateString).toLocaleDateString('pt-PT', options);
+    return new Date(dateString).toLocaleDateString(locale, options);
   };
 
   // Filtrar itens do histórico com base no termo de pesquisa
@@ -39,20 +42,20 @@ function HistoryView({
       <div className="search-controls">
         <div className="search-input-container">
           <Icon path={mdiMagnify} size={0.9} className="search-icon" />
-          <input 
-            type="text" 
-            placeholder="Pesquisar no histórico..." 
+          <input
+            type="text"
+            placeholder={t('history.search')}
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
             className="search-input"
           />
         </div>
-        <button 
-          onClick={onClearHistory} 
+        <button
+          onClick={onClearHistory}
           className="clear-button"
         >
           <Icon path={mdiDelete} size={0.8} />
-          Limpar histórico
+          {t('history.clear')}
         </button>
       </div>
 
@@ -79,10 +82,10 @@ function HistoryView({
                         <span className="notes-text">{item.formattedNotes}</span>
                       </div>
                       <span className="item-time">
-                        {new Date(item.timestamp).toLocaleTimeString('pt-PT', {
+                        {new Date(item.timestamp).toLocaleTimeString(locale, {
                           hour: '2-digit',
                           minute: '2-digit'
-                        })} 
+                        })}
                       </span>
                     </div>
                     
@@ -103,14 +106,14 @@ function HistoryView({
         <div className="empty-state">
           <Icon path={mdiMusicNote} size={2} className="empty-icon" />
           <p className="empty-message">
-            {searchTerm ? "Nenhum resultado encontrado." : "Nenhuma análise no histórico."}
+            {searchTerm ? t('history.noResults') : t('history.empty')}
           </p>
           {searchTerm && (
-            <button 
+            <button
               onClick={() => setSearchTerm('')}
               className="clear-search-button"
             >
-              Limpar pesquisa
+              {t('history.clearSearch')}
             </button>
           )}
         </div>

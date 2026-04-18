@@ -1,0 +1,53 @@
+.language-toggle {
+  position: absolute;
+  top: 16px;
+  right: 20px;
+  display: inline-flex;
+  background: rgba(255, 255, 255, 0.15);
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  border-radius: 999px;
+  padding: 4px;
+  backdrop-filter: blur(10px);
+  z-index: 2;
+}
+
+.language-toggle-btn {
+  background: transparent;
+  border: none;
+  color: rgba(255, 255, 255, 0.75);
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  padding: 6px 14px;
+  border-radius: 999px;
+  cursor: pointer;
+  transition: background 0.25s ease, color 0.25s ease, transform 0.2s ease;
+  min-width: 40px;
+}
+
+.language-toggle-btn:hover {
+  color: #ffffff;
+}
+
+.language-toggle-btn.active {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: #ffffff;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
+}
+
+.language-toggle-btn:focus-visible {
+  outline: 2px solid rgba(255, 255, 255, 0.8);
+  outline-offset: 2px;
+}
+
+@media (max-width: 480px) {
+  .language-toggle {
+    top: 10px;
+    right: 12px;
+  }
+  .language-toggle-btn {
+    font-size: 12px;
+    padding: 5px 10px;
+    min-width: 36px;
+  }
+}

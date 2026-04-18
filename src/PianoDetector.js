@@ -1,4 +1,5 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useCallback } from "react";
+import { useTranslation } from "react-i18next";
 import Icon from '@mdi/react';
 import { mdiMicrophone, mdiStop, mdiChartLine, mdiPlay, mdiHistory, mdiMusicNote } from '@mdi/js';
 import "./PianoDetector.css";
@@ -9,15 +10,18 @@ import NoteDetector from "./NoteDetector";
 import historyManager from "./HistoryManager";
 import Modal from "./Modal";
 import HistoryView from "./HistoryView";
+import { useNoteNames } from "./hooks/useNoteNames";
 
 const PianoDetector = () => {
+  const { t } = useTranslation();
+  const noteNames = useNoteNames();
+
   // Estados
   const [isRecording, setIsRecording] = useState(false);
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [recordingComplete, setRecordingComplete] = useState(false);
   const [recordedAudio, setRecordedAudio] = useState(null);
-  const [recordingDuration, setRecordingDuration] = useState(0);
-  const [status, setStatus] = useState("Ready");
+  const [statusInfo, setStatusInfo] = useState({ key: 'status.ready', type: 'info', params: {} });
   const [activeNotes, setActiveNotes] = useState([]);
   const [detectedNotes, setDetectedNotes] = useState([]);
   const [progress, setProgress] = useState(0);
@@ -44,26 +48,26 @@ const PianoDetector = () => {
 
   const allNotes = noteDetectorRef.current.getAllNotes();
 
+  const setStatus = useCallback((key, type = 'info', params = {}) => {
+    setStatusInfo({ key, type, params });
+  }, []);
+
   // Subscreve às mudanças no store do history.
   useEffect(() => {
     const unsubscribe = historyManager.subscribe(newState => {
       setHistoryState(newState);
     });
-
-    // Forçar carregamento do histórico na inicialização
     historyManager.loadHistory();
-
     return () => {
       unsubscribe();
     };
   }, []);
 
-  // Inicializa o BasicPitch assim que a aplicação é iniciada (assim que o componente é montado).
+  // Inicializa o BasicPitch assim que a aplicação é iniciada.
   useEffect(() => {
     noteDetectorRef.current.initBasicPitch(setStatus);
-  }, []);
+  }, [setStatus]);
 
-  // Effect para lidar com análise pendente quando o componente Gemini está pronto.
   useEffect(() => {
     if (pendingAnalysis && geminiComponentRef.current && detectedNotes.length > 0) {
       geminiComponentRef.current.analyzeNotes();
@@ -74,12 +78,8 @@ const PianoDetector = () => {
       geminiComponentRef.current.loadHistoryItem(pendingHistoryItem);
       setPendingHistoryItem(null);
     }
-  }, [pendingAnalysis, pendingHistoryItem, detectedNotes, geminiComponentRef.current]);
+  }, [pendingAnalysis, pendingHistoryItem, detectedNotes]);
 
-  /* Permite fazer um cleanup dos recursos sempre que a aplicação é fechada (componente desmontado):
-  - Termina o temporizador
-  - Liberta o microfone
-  - Fecha o contexto de audio */
   useEffect(() => {
     return () => {
       if (timerRef.current) {
@@ -89,11 +89,6 @@ const PianoDetector = () => {
     };
   }, []);
 
-  /* 
-  Hook que é chamado sempre que o estado detectedNotes muda, convertendo cada nota MIDI 
-  para a sua pitch class, ou seja, converte para um valor de 0 a 11 que corresponde à sua 
-  nota mas sem a oitava onde foi tocada. 
-  */
   useEffect(() => {
     if (detectedNotes.length > 0) {
       const pitchClasses = new Set(detectedNotes.map((note) => note % 12));
@@ -103,13 +98,8 @@ const PianoDetector = () => {
     }
   }, [detectedNotes]);
 
-  // Função responsável pela gravação de audio
   const startRecording = async () => {
     try {
-      /* 
-      Verifica se o modulo de deteção de pitch está disponível antes de começar a gravação.
-      Se não estiver disponível, inicia-o.
-      */
       if (!noteDetectorRef.current.basicPitch) {
         const initialized = await noteDetectorRef.current.initBasicPitch(setStatus);
         if (!initialized) return;
@@ -134,11 +124,10 @@ const PianoDetector = () => {
       }, 100);
     } catch (error) {
       console.error("Erro ao começar a gravação:", error);
-      setStatus(`Erro ao acessar o microfone: ${error.message}`);
+      setStatus('status.micError', 'error', { message: error.message });
     }
   };
 
-  // Função responsável por terminar o processo de gravação.
   const stopRecording = () => {
     if (isRecording) {
       if (timerRef.current) {
@@ -149,10 +138,6 @@ const PianoDetector = () => {
     }
   };
 
-  /* 
-  Função que inicia a análise de dados, chamando a função processAudioBlob() ou mostrando
-  uma mensagem ao utilizador, caso não haja audio gravado.
-  */
   const analyzeRecording = () => {
     if (recordedAudio) {
       audioServiceRef.current.processAudioBlob(
@@ -171,11 +156,10 @@ const PianoDetector = () => {
         }
       );
     } else {
-      setStatus("Nenhuma gravação disponível para analisar");
+      setStatus('status.noRecording', 'info');
     }
   };
 
-  // Função que permite ao utilizador ouvir o audio gravado.
   const playRecording = () => {
     audioServiceRef.current.playRecording(recordedAudio);
   };
@@ -189,25 +173,17 @@ const PianoDetector = () => {
     }
   };
 
-  /* 
-  Função que salva a análise no histórico e chama o componente Gemini para exibir a análise.
-  */
   const saveAnalysisToHistory = (response) => {
     if (detectedNotes.length > 0) {
       historyManager.saveToHistory(detectedNotes, response, recordedAudio);
     }
   };
 
-  // Carrega uma análise prévia do histórico
   const loadFromHistory = async (historyItem) => {
     setPendingHistoryItem(historyItem);
     setDetectedNotes(historyItem.notes);
     setRecordedAudio(null);
-    
-    /* 
-    Se o item do histórico tiver um áudio associado,
-    carrega-o do cache e define o ID atual do áudio.
-    */
+
     if (historyItem.audioId) {
         setCurrentAudioId(historyItem.audioId);
         const cachedAudio = await audioCacheServiceRef.current.loadAudioFromCache(historyItem.audioId);
@@ -217,12 +193,11 @@ const PianoDetector = () => {
     } else {
         setCurrentAudioId(null);
     }
-    
+
     closeHistoryModal();
 };
 
 
-  // Funções para controlar o modal
   const openHistoryModal = () => {
     setIsModalOpen(true);
   };
@@ -231,19 +206,17 @@ const PianoDetector = () => {
     setIsModalOpen(false);
   };
 
-  /* 
-  Função que retorna a classe CSS baseada no estado atual.
-  */
-  const getStatusClass = (status) => {
-    if (status.includes('erro') || status.includes('Erro')) return 'status-error';
-    if (status.includes('completo') || status.includes('carregado')) return 'status-success';
-    if (status.includes('processando') || status.includes('gravando')) return 'status-processing';
-    return 'status-info';
+  const getStatusClass = (type) => {
+    switch (type) {
+      case 'error': return 'status-error';
+      case 'success': return 'status-success';
+      case 'processing': return 'status-processing';
+      default: return 'status-info';
+    }
   };
 
-  /*
-  Lógica associada aos botões.
-  */
+  const statusText = t(statusInfo.key, statusInfo.params);
+
   const Button = ({ onClick, disabled, icon, children, variant = 'primary', size = 'medium' }) => {
     const variants = {
       primary: {
@@ -313,19 +286,18 @@ const PianoDetector = () => {
   };
 
   return (
-    /* Componente visual da aplicação que utiliza classes definidas no ficheiro PianoDetector.css */
     <div className="piano-detector-modern">
       <div className="status-card">
         <div className="status-header">
           <Icon path={mdiMusicNote} size={1.2} />
-          <h2>Detetor de Notas de Piano</h2>
+          <h2>{t('app.title')}</h2>
         </div>
 
         <div className="status-content">
           <div className="status-item">
-            <span className="status-label">Estado:</span>
-            <span className={`status-value ${getStatusClass(status)}`}>
-              {status}
+            <span className="status-label">{t('status.label')}</span>
+            <span className={`status-value ${getStatusClass(statusInfo.type)}`}>
+              {statusText}
             </span>
           </div>
 
@@ -333,7 +305,7 @@ const PianoDetector = () => {
             <div className="status-item">
               <div className="recording-indicator">
                 <div className="pulse-dot"></div>
-                <span>A gravar</span>
+                <span>{t('status.recordingLive')}</span>
                 <span ref={durationRef}>0.0s</span>
               </div>
             </div>
@@ -342,29 +314,29 @@ const PianoDetector = () => {
           {isAnalyzing && (
             <div className="progress-container">
               <div className="progress-bar">
-                <div 
-                  className="progress-fill" 
+                <div
+                  className="progress-fill"
                   style={{ width: `${progress * 100}%` }}
                 ></div>
               </div>
               <div className="progress-text">
-                Processando: {Math.round(progress * 100)}%
+                {t('status.progressProcessing', { percent: Math.round(progress * 100) })}
               </div>
             </div>
           )}
 
           {warningInfo && (
             <div className="warning-card">
-              {warningInfo}
+              {t(warningInfo)}
             </div>
           )}
 
           {detectedNotes.length > 0 && (
             <div className="notes-accordion">
               <div className="detected-notes">
-                <span className="notes-label">Notas detectadas:</span>
+                <span className="notes-label">{t('notes.detected')}</span>
                 <span className="notes-display">
-                  {noteDetectorRef.current.formatNotes(detectedNotes)}
+                  {noteDetectorRef.current.formatNotes(detectedNotes, noteNames)}
                 </span>
               </div>
             </div>
@@ -374,60 +346,60 @@ const PianoDetector = () => {
 
       <div className="controls-modern">
         {!isRecording ? (
-          <Button 
-            onClick={startRecording} 
+          <Button
+            onClick={startRecording}
             disabled={isAnalyzing}
             icon={mdiMicrophone}
             variant="primary"
           >
-            Iniciar Gravação
+            {t('buttons.start')}
           </Button>
         ) : (
-          <Button 
+          <Button
             onClick={stopRecording}
             icon={mdiStop}
             variant="secondary"
           >
-            Parar Gravação
+            {t('buttons.stop')}
           </Button>
         )}
 
         {recordedAudio && !pendingHistoryItem && (
-          <Button 
+          <Button
             onClick={playRecording}
             icon={mdiPlay}
             variant="success"
           >
-            Ouvir Gravação Atual
+            {t('buttons.playCurrent')}
           </Button>
         )}
 
         {currentAudioId && pendingHistoryItem && (
-          <Button 
+          <Button
             onClick={playHistoryAudio}
             icon={mdiPlay}
             variant="secondary"
           >
-            Ouvir Gravação do Histórico
+            {t('buttons.playHistory')}
           </Button>
         )}
 
         {recordingComplete && !isAnalyzing && (
-          <Button 
+          <Button
             onClick={analyzeRecording}
             icon={mdiChartLine}
             variant="primary"
           >
-            Analisar Gravação
+            {t('buttons.analyze')}
           </Button>
         )}
 
-        <Button 
+        <Button
           onClick={openHistoryModal}
           icon={mdiHistory}
           variant="secondary"
         >
-          Histórico ({historyState.searchHistory.length})
+          {t('buttons.history', { count: historyState.searchHistory.length })}
         </Button>
       </div>
 
@@ -436,14 +408,14 @@ const PianoDetector = () => {
           {allNotes.map((note) => {
             const isActive = chordPitchClasses.has(note.id);
             const isBlack = noteDetectorRef.current.isBlackKey(note.midiNote);
-            
+
             return (
               <div
                 key={note.id}
                 className={`piano-key ${isBlack ? 'black-key' : 'white-key'} ${isActive ? 'active' : ''}`}
               >
                 <span className="note-name">
-                  {noteDetectorRef.current.midiToPitchClassName(note.midiNote)}
+                  {noteDetectorRef.current.midiToPitchClassName(note.midiNote, noteNames)}
                 </span>
               </div>
             );
@@ -461,7 +433,7 @@ const PianoDetector = () => {
       <Modal
         isOpen={isModalOpen}
         onClose={closeHistoryModal}
-        title="Histórico de Análises"
+        title={t('history.title')}
       >
         <HistoryView
           searchHistory={historyState.searchHistory}

@@ -1,0 +1,64 @@
+{
+  "app": {
+    "title": "Detetor de Notas de Piano"
+  },
+  "status": {
+    "label": "Estado:",
+    "ready": "Pronto",
+    "recording": "A gravar áudio... (máx. 10s)",
+    "recordingLive": "A gravar",
+    "complete": "Gravação completa",
+    "autoStopped": "Gravação parada automaticamente (limite de 10s)",
+    "lowVolume": "Volume do áudio é demasiado baixo",
+    "shortSample": "Amostra de áudio muito pequena",
+    "processing": "A processar áudio...",
+    "resampling": "A remasterizar áudio...",
+    "analysisComplete": "Análise completa",
+    "noNotes": "Nenhuma nota detetada",
+    "micError": "Erro ao aceder ao microfone: {{message}}",
+    "processError": "Erro ao processar o áudio: {{message}}",
+    "modelLoading": "A carregar o modelo de deteção...",
+    "modelTesting": "Modelo carregado - a testar...",
+    "modelReady": "Modelo de deteção carregado e validado!",
+    "modelValidationError": "Erro ao validar o modelo de deteção",
+    "modelInitError": "Erro ao inicializar o modelo de deteção: {{message}}",
+    "lowNotesWarning": "⚠️ Detetadas notas abaixo de C2, a precisão pode ser limitada.",
+    "noRecording": "Nenhuma gravação disponível para analisar",
+    "progressProcessing": "A processar: {{percent}}%"
+  },
+  "notes": {
+    "detected": "Notas detetadas:"
+  },
+  "buttons": {
+    "start": "Iniciar Gravação",
+    "stop": "Parar Gravação",
+    "playCurrent": "Ouvir Gravação Atual",
+    "playHistory": "Ouvir Gravação do Histórico",
+    "analyze": "Analisar Gravação",
+    "history": "Histórico ({{count}})"
+  },
+  "history": {
+    "title": "Histórico de Análises",
+    "search": "Pesquisar no histórico...",
+    "clear": "Limpar histórico",
+    "empty": "Nenhuma análise no histórico.",
+    "noResults": "Nenhum resultado encontrado.",
+    "clearSearch": "Limpar pesquisa"
+  },
+  "analysis": {
+    "title": "Análise Musical",
+    "loading": "A analisar as notas...",
+    "error": "Ocorreu um erro ao analisar as notas com a Gemini API.",
+    "noApiKey": "Erro: REACT_APP_GEMINI_API_KEY não definida. Crie um ficheiro `.env` na raiz do projeto e adicione a chave. Depois, reinicie o servidor.",
+    "noNotes": "Nenhuma nota para analisar.",
+    "modelNotInit": "O modelo Gemini não foi inicializado."
+  },
+  "modal": {
+    "close": "Fechar"
+  },
+  "language": {
+    "label": "Idioma",
+    "pt": "PT",
+    "en": "EN"
+  }
+}

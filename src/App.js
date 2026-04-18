@@ -1,13 +1,15 @@
 import React from 'react';
 import './App.css';
 import PianoDetector from './PianoDetector';
+import LanguageToggle from './components/LanguageToggle';
 import logo from './images/logo.png'
 
 function App() {
   return (
     <div className="App">
       <header className="App-header">
-        <img src={logo} className='logo-image'></img>
+        <LanguageToggle />
+        <img src={logo} className='logo-image' alt="SuperOuvido" />
       </header>
       <main>
         <PianoDetector />

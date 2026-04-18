@@ -1,10 +1,16 @@
-# Nuxt dev/build outputs
+# Build / compilation outputs
+build
+dist
+out
 .output
 .data
 .nuxt
 .nitro
 .cache
-dist
+.parcel-cache
+.next
+coverage
+*.tsbuildinfo
 
 # Node dependencies
 node_modules

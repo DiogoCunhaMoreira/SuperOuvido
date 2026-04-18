@@ -1,0 +1,64 @@
+{
+  "app": {
+    "title": "Piano Note Detector"
+  },
+  "status": {
+    "label": "Status:",
+    "ready": "Ready",
+    "recording": "Recording audio... (max. 10s)",
+    "recordingLive": "Recording",
+    "complete": "Recording complete",
+    "autoStopped": "Recording stopped automatically (10s limit)",
+    "lowVolume": "Audio volume is too low",
+    "shortSample": "Audio sample too short",
+    "processing": "Processing audio...",
+    "resampling": "Resampling audio...",
+    "analysisComplete": "Analysis complete",
+    "noNotes": "No notes detected",
+    "micError": "Error accessing microphone: {{message}}",
+    "processError": "Error processing audio: {{message}}",
+    "modelLoading": "Loading detection model...",
+    "modelTesting": "Model loaded — testing...",
+    "modelReady": "Detection model loaded and validated!",
+    "modelValidationError": "Error validating the detection model",
+    "modelInitError": "Error initializing the detection model: {{message}}",
+    "lowNotesWarning": "⚠️ Notes below C2 detected; accuracy may be limited.",
+    "noRecording": "No recording available to analyze",
+    "progressProcessing": "Processing: {{percent}}%"
+  },
+  "notes": {
+    "detected": "Detected notes:"
+  },
+  "buttons": {
+    "start": "Start Recording",
+    "stop": "Stop Recording",
+    "playCurrent": "Play Current Recording",
+    "playHistory": "Play History Recording",
+    "analyze": "Analyze Recording",
+    "history": "History ({{count}})"
+  },
+  "history": {
+    "title": "Analysis History",
+    "search": "Search history...",
+    "clear": "Clear history",
+    "empty": "No analyses in history.",
+    "noResults": "No results found.",
+    "clearSearch": "Clear search"
+  },
+  "analysis": {
+    "title": "Musical Analysis",
+    "loading": "Analyzing notes...",
+    "error": "An error occurred while analyzing the notes with the Gemini API.",
+    "noApiKey": "Error: REACT_APP_GEMINI_API_KEY not set. Create a `.env` file at the project root and add the key, then restart the server.",
+    "noNotes": "No notes to analyze.",
+    "modelNotInit": "The Gemini model has not been initialized."
+  },
+  "modal": {
+    "close": "Close"
+  },
+  "language": {
+    "label": "Language",
+    "pt": "PT",
+    "en": "EN"
+  }
+}

@@ -1,9 +1,11 @@
 import React, { useEffect, useRef } from 'react';
 import ReactDOM from 'react-dom';
+import { useTranslation } from 'react-i18next';
 import Icon from '@mdi/react';
 import { mdiClose } from '@mdi/js';
 
 const Modal = ({ isOpen, onClose, title, children }) => {
+  const { t } = useTranslation();
   const modalRef = useRef(null);
 
   // Fechar modal com a tecla Escape
@@ -94,7 +96,7 @@ const Modal = ({ isOpen, onClose, title, children }) => {
           </h2>
           <button
             onClick={onClose}
-            aria-label="Fechar"
+            aria-label={t('modal.close')}
             style={{
               background: 'linear-gradient(135deg, #f093fb, #f5576c)',
               border: 'none',
