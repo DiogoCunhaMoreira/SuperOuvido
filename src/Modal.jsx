@@ -42,8 +42,7 @@ const Modal = ({ isOpen, onClose, title, children }) => {
         left: 0,
         right: 0,
         bottom: 0,
-        background: 'rgba(0, 0, 0, 0.6)',
-        backdropFilter: 'blur(8px)',
+        background: 'rgba(87, 86, 79, 0.55)',
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
@@ -53,16 +52,15 @@ const Modal = ({ isOpen, onClose, title, children }) => {
         padding: '20px'
       }}
     >
-      <div 
+      <div
         className="modal-content"
         ref={modalRef}
         onClick={e => e.stopPropagation()}  // Previne que cliques dentro do modal fechem-no
         style={{
-          background: 'linear-gradient(135deg, rgba(255, 255, 255, 0.95), rgba(255, 255, 255, 0.9))',
-          backdropFilter: 'blur(20px)',
+          background: '#F8F3CE',
           borderRadius: '20px',
-          boxShadow: '0 20px 40px rgba(0, 0, 0, 0.15)',
-          border: '1px solid rgba(255, 255, 255, 0.3)',
+          boxShadow: '0 10px 30px rgba(87, 86, 79, 0.2)',
+          border: '1px solid #DDDAD0',
           width: '90%',
           maxWidth: '900px',
           maxHeight: '85vh',
@@ -72,25 +70,22 @@ const Modal = ({ isOpen, onClose, title, children }) => {
           flexDirection: 'column'
         }}
       >
-        <div 
+        <div
           className="modal-header"
           style={{
             display: 'flex',
             justifyContent: 'space-between',
             alignItems: 'center',
             padding: '20px 24px',
-            borderBottom: '1px solid rgba(102, 126, 234, 0.1)',
-            background: 'linear-gradient(135deg, rgba(102, 126, 234, 0.05), rgba(118, 75, 162, 0.05))',
+            borderBottom: '1px solid #DDDAD0',
+            background: '#DDDAD0',
           }}
         >
-          <h2 style={{ 
-            margin: 0, 
-            fontSize: '1.5rem', 
+          <h2 style={{
+            margin: 0,
+            fontSize: '1.5rem',
             fontWeight: '700',
-            background: 'linear-gradient(135deg, #667eea, #764ba2)',
-            WebkitBackgroundClip: 'text',
-            WebkitTextFillColor: 'transparent',
-            backgroundClip: 'text'
+            color: '#57564F'
           }}>
             {title}
           </h2>
@@ -98,28 +93,26 @@ const Modal = ({ isOpen, onClose, title, children }) => {
             onClick={onClose}
             aria-label={t('modal.close')}
             style={{
-              background: 'linear-gradient(135deg, #f093fb, #f5576c)',
+              background: '#7A7A73',
               border: 'none',
               borderRadius: '12px',
               width: '40px',
               height: '40px',
               cursor: 'pointer',
-              color: 'white',
+              color: '#F8F3CE',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
-              transition: 'all 0.3s ease',
-              boxShadow: '0 4px 12px rgba(240, 147, 251, 0.3)'
+              transition: 'all 0.2s ease',
+              boxShadow: '0 2px 6px rgba(87, 86, 79, 0.2)'
             }}
             onMouseEnter={e => {
-              e.currentTarget.style.background = 'linear-gradient(135deg, #ed7de8, #f04558)';
-              e.currentTarget.style.transform = 'scale(1.1)';
-              e.currentTarget.style.boxShadow = '0 6px 16px rgba(240, 147, 251, 0.4)';
+              e.currentTarget.style.background = '#57564F';
+              e.currentTarget.style.transform = 'scale(1.05)';
             }}
             onMouseLeave={e => {
-              e.currentTarget.style.background = 'linear-gradient(135deg, #f093fb, #f5576c)';
+              e.currentTarget.style.background = '#7A7A73';
               e.currentTarget.style.transform = 'scale(1)';
-              e.currentTarget.style.boxShadow = '0 4px 12px rgba(240, 147, 251, 0.3)';
             }}
           >
             <Icon path={mdiClose} size={1} />

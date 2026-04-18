@@ -3,18 +3,17 @@
   top: 16px;
   right: 20px;
   display: inline-flex;
-  background: rgba(255, 255, 255, 0.15);
-  border: 1px solid rgba(255, 255, 255, 0.25);
+  background: rgba(248, 243, 206, 0.15);
+  border: 1px solid rgba(248, 243, 206, 0.35);
   border-radius: 999px;
   padding: 4px;
-  backdrop-filter: blur(10px);
   z-index: 2;
 }
 
 .language-toggle-btn {
   background: transparent;
   border: none;
-  color: rgba(255, 255, 255, 0.75);
+  color: rgba(248, 243, 206, 0.75);
   font-size: 13px;
   font-weight: 700;
   letter-spacing: 0.5px;
@@ -26,17 +25,17 @@
 }
 
 .language-toggle-btn:hover {
-  color: #ffffff;
+  color: #F8F3CE;
 }
 
 .language-toggle-btn.active {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  color: #ffffff;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
+  background: #F8F3CE;
+  color: #57564F;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.2);
 }
 
 .language-toggle-btn:focus-visible {
-  outline: 2px solid rgba(255, 255, 255, 0.8);
+  outline: 2px solid rgba(248, 243, 206, 0.8);
   outline-offset: 2px;
 }
 

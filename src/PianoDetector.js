@@ -220,19 +220,19 @@ const PianoDetector = () => {
   const Button = ({ onClick, disabled, icon, children, variant = 'primary', size = 'medium' }) => {
     const variants = {
       primary: {
-        background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-        color: 'white',
-        hoverBackground: 'linear-gradient(135deg, #5a6fd8 0%, #6a4190 100%)'
+        background: '#57564F',
+        color: '#F8F3CE',
+        hoverBackground: '#7A7A73'
       },
       secondary: {
-        background: 'linear-gradient(135deg, #f093fb 0%, #f5576c 100%)',
-        color: 'white',
-        hoverBackground: 'linear-gradient(135deg, #ed7de8 0%, #f04558 100%)'
+        background: '#7A7A73',
+        color: '#F8F3CE',
+        hoverBackground: '#57564F'
       },
       success: {
-        background: 'linear-gradient(135deg, #4facfe 0%, #00f2fe 100%)',
-        color: 'white',
-        hoverBackground: 'linear-gradient(135deg, #3d9bfd 0%, #00e0ee 100%)'
+        background: '#57564F',
+        color: '#F8F3CE',
+        hoverBackground: '#7A7A73'
       }
     };
 
@@ -247,8 +247,8 @@ const PianoDetector = () => {
         onClick={onClick}
         disabled={disabled}
         style={{
-          background: disabled ? '#e2e8f0' : variants[variant].background,
-          color: disabled ? '#a0aec0' : variants[variant].color,
+          background: disabled ? '#DDDAD0' : variants[variant].background,
+          color: disabled ? '#7A7A73' : variants[variant].color,
           border: 'none',
           borderRadius: '12px',
           cursor: disabled ? 'not-allowed' : 'pointer',
@@ -257,8 +257,8 @@ const PianoDetector = () => {
           justifyContent: 'center',
           gap: '8px',
           fontWeight: '600',
-          transition: 'all 0.3s ease',
-          boxShadow: disabled ? 'none' : '0 4px 12px rgba(0, 0, 0, 0.15)',
+          transition: 'all 0.2s ease',
+          boxShadow: disabled ? 'none' : '0 2px 6px rgba(87, 86, 79, 0.15)',
           transform: disabled ? 'none' : 'translateY(0)',
           minHeight: '44px',
           touchAction: 'manipulation',
@@ -267,15 +267,15 @@ const PianoDetector = () => {
         onMouseOver={(e) => {
           if (!disabled) {
             e.target.style.background = variants[variant].hoverBackground;
-            e.target.style.transform = 'translateY(-2px)';
-            e.target.style.boxShadow = '0 6px 16px rgba(0, 0, 0, 0.2)';
+            e.target.style.transform = 'translateY(-1px)';
+            e.target.style.boxShadow = '0 4px 10px rgba(87, 86, 79, 0.2)';
           }
         }}
         onMouseOut={(e) => {
           if (!disabled) {
             e.target.style.background = variants[variant].background;
             e.target.style.transform = 'translateY(0)';
-            e.target.style.boxShadow = '0 4px 12px rgba(0, 0, 0, 0.15)';
+            e.target.style.boxShadow = '0 2px 6px rgba(87, 86, 79, 0.15)';
           }
         }}
       >
