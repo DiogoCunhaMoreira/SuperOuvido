@@ -220,19 +220,19 @@ const PianoDetector = () => {
   const Button = ({ onClick, disabled, icon, children, variant = 'primary', size = 'medium' }) => {
     const variants = {
       primary: {
-        background: '#57564F',
-        color: '#F8F3CE',
-        hoverBackground: '#7A7A73'
+        background: '#86B0BD',
+        color: '#FFF0DD',
+        hoverBackground: '#E2A16F'
       },
       secondary: {
-        background: '#7A7A73',
-        color: '#F8F3CE',
-        hoverBackground: '#57564F'
+        background: '#E2A16F',
+        color: '#FFF0DD',
+        hoverBackground: '#86B0BD'
       },
       success: {
-        background: '#57564F',
-        color: '#F8F3CE',
-        hoverBackground: '#7A7A73'
+        background: '#86B0BD',
+        color: '#FFF0DD',
+        hoverBackground: '#E2A16F'
       }
     };
 
@@ -247,8 +247,8 @@ const PianoDetector = () => {
         onClick={onClick}
         disabled={disabled}
         style={{
-          background: disabled ? '#DDDAD0' : variants[variant].background,
-          color: disabled ? '#7A7A73' : variants[variant].color,
+          background: disabled ? '#D1D3D4' : variants[variant].background,
+          color: disabled ? '#E2A16F' : variants[variant].color,
           border: 'none',
           borderRadius: '12px',
           cursor: disabled ? 'not-allowed' : 'pointer',
@@ -258,7 +258,7 @@ const PianoDetector = () => {
           gap: '8px',
           fontWeight: '600',
           transition: 'all 0.2s ease',
-          boxShadow: disabled ? 'none' : '0 2px 6px rgba(87, 86, 79, 0.15)',
+          boxShadow: disabled ? 'none' : '0 2px 6px rgba(134, 176, 189, 0.15)',
           transform: disabled ? 'none' : 'translateY(0)',
           minHeight: '44px',
           touchAction: 'manipulation',
@@ -268,14 +268,14 @@ const PianoDetector = () => {
           if (!disabled) {
             e.target.style.background = variants[variant].hoverBackground;
             e.target.style.transform = 'translateY(-1px)';
-            e.target.style.boxShadow = '0 4px 10px rgba(87, 86, 79, 0.2)';
+            e.target.style.boxShadow = '0 4px 10px rgba(134, 176, 189, 0.2)';
           }
         }}
         onMouseOut={(e) => {
           if (!disabled) {
             e.target.style.background = variants[variant].background;
             e.target.style.transform = 'translateY(0)';
-            e.target.style.boxShadow = '0 2px 6px rgba(87, 86, 79, 0.15)';
+            e.target.style.boxShadow = '0 2px 6px rgba(134, 176, 189, 0.15)';
           }
         }}
       >

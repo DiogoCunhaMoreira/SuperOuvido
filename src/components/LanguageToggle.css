@@ -3,8 +3,8 @@
   top: 16px;
   right: 20px;
   display: inline-flex;
-  background: rgba(248, 243, 206, 0.15);
-  border: 1px solid rgba(248, 243, 206, 0.35);
+  background: rgba(255, 240, 221, 0.15);
+  border: 1px solid rgba(255, 240, 221, 0.35);
   border-radius: 999px;
   padding: 4px;
   z-index: 2;
@@ -13,7 +13,7 @@
 .language-toggle-btn {
   background: transparent;
   border: none;
-  color: rgba(248, 243, 206, 0.75);
+  color: rgba(255, 240, 221, 0.75);
   font-size: 13px;
   font-weight: 700;
   letter-spacing: 0.5px;
@@ -25,17 +25,17 @@
 }
 
 .language-toggle-btn:hover {
-  color: #F8F3CE;
+  color: #FFF0DD;
 }
 
 .language-toggle-btn.active {
-  background: #F8F3CE;
-  color: #57564F;
+  background: #FFF0DD;
+  color: #86B0BD;
   box-shadow: 0 1px 4px rgba(0, 0, 0, 0.2);
 }
 
 .language-toggle-btn:focus-visible {
-  outline: 2px solid rgba(248, 243, 206, 0.8);
+  outline: 2px solid rgba(255, 240, 221, 0.8);
   outline-offset: 2px;
 }
 

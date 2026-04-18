@@ -42,7 +42,7 @@ const Modal = ({ isOpen, onClose, title, children }) => {
         left: 0,
         right: 0,
         bottom: 0,
-        background: 'rgba(87, 86, 79, 0.55)',
+        background: 'rgba(134, 176, 189, 0.55)',
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
@@ -57,10 +57,10 @@ const Modal = ({ isOpen, onClose, title, children }) => {
         ref={modalRef}
         onClick={e => e.stopPropagation()}  // Previne que cliques dentro do modal fechem-no
         style={{
-          background: '#F8F3CE',
+          background: '#FFF0DD',
           borderRadius: '20px',
-          boxShadow: '0 10px 30px rgba(87, 86, 79, 0.2)',
-          border: '1px solid #DDDAD0',
+          boxShadow: '0 10px 30px rgba(134, 176, 189, 0.2)',
+          border: '1px solid #D1D3D4',
           width: '90%',
           maxWidth: '900px',
           maxHeight: '85vh',
@@ -77,15 +77,15 @@ const Modal = ({ isOpen, onClose, title, children }) => {
             justifyContent: 'space-between',
             alignItems: 'center',
             padding: '20px 24px',
-            borderBottom: '1px solid #DDDAD0',
-            background: '#DDDAD0',
+            borderBottom: '1px solid #D1D3D4',
+            background: '#D1D3D4',
           }}
         >
           <h2 style={{
             margin: 0,
             fontSize: '1.5rem',
             fontWeight: '700',
-            color: '#57564F'
+            color: '#86B0BD'
           }}>
             {title}
           </h2>
@@ -93,25 +93,25 @@ const Modal = ({ isOpen, onClose, title, children }) => {
             onClick={onClose}
             aria-label={t('modal.close')}
             style={{
-              background: '#7A7A73',
+              background: '#E2A16F',
               border: 'none',
               borderRadius: '12px',
               width: '40px',
               height: '40px',
               cursor: 'pointer',
-              color: '#F8F3CE',
+              color: '#FFF0DD',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
               transition: 'all 0.2s ease',
-              boxShadow: '0 2px 6px rgba(87, 86, 79, 0.2)'
+              boxShadow: '0 2px 6px rgba(134, 176, 189, 0.2)'
             }}
             onMouseEnter={e => {
-              e.currentTarget.style.background = '#57564F';
+              e.currentTarget.style.background = '#86B0BD';
               e.currentTarget.style.transform = 'scale(1.05)';
             }}
             onMouseLeave={e => {
-              e.currentTarget.style.background = '#7A7A73';
+              e.currentTarget.style.background = '#E2A16F';
               e.currentTarget.style.transform = 'scale(1)';
             }}
           >

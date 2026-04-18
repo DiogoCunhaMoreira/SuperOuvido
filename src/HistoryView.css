@@ -20,7 +20,7 @@
   .search-icon {
     position: absolute;
     left: 12px;
-    color: #57564F;
+    color: #86B0BD;
     z-index: 1;
   }
 
@@ -28,17 +28,17 @@
     width: 100%;
     padding: 12px 12px 12px 40px;
     border-radius: 12px;
-    border: 1px solid #DDDAD0;
+    border: 1px solid #D1D3D4;
     font-size: 14px;
-    background: #F8F3CE;
+    background: #FFF0DD;
     transition: all 0.3s ease;
     outline: none;
-    color: #57564F;
+    color: #86B0BD;
   }
 
   .search-input:focus {
-    border-color: #57564F;
-    box-shadow: 0 0 0 3px rgba(87, 86, 79, 0.12);
+    border-color: #86B0BD;
+    box-shadow: 0 0 0 3px rgba(134, 176, 189, 0.12);
     background: #ffffff;
   }
 
@@ -47,22 +47,22 @@
     align-items: center;
     gap: 6px;
     padding: 12px 16px;
-    background: #7A7A73;
-    color: #F8F3CE;
+    background: #E2A16F;
+    color: #FFF0DD;
     border: none;
     border-radius: 12px;
     cursor: pointer;
     font-weight: 600;
     font-size: 14px;
     transition: all 0.3s ease;
-    box-shadow: 0 2px 6px rgba(87, 86, 79, 0.15);
+    box-shadow: 0 2px 6px rgba(134, 176, 189, 0.15);
     white-space: nowrap;
   }
 
   .clear-button:hover {
-    background: #57564F;
+    background: #86B0BD;
     transform: translateY(-1px);
-    box-shadow: 0 4px 10px rgba(87, 86, 79, 0.2);
+    box-shadow: 0 4px 10px rgba(134, 176, 189, 0.2);
   }
 
   .history-content {
@@ -80,35 +80,35 @@
     align-items: center;
     gap: 8px;
     margin: 0 0 16px 0;
-    color: #57564F;
+    color: #86B0BD;
     font-weight: 600;
     font-size: 16px;
     padding-bottom: 8px;
-    border-bottom: 1px solid #DDDAD0;
+    border-bottom: 1px solid #D1D3D4;
   }
 
   .history-item {
     display: flex;
     margin-bottom: 12px;
-    background: #F8F3CE;
+    background: #FFF0DD;
     border-radius: 16px;
     cursor: pointer;
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    border: 1px solid #DDDAD0;
+    border: 1px solid #D1D3D4;
     overflow: hidden;
     position: relative;
   }
 
   .history-item:hover {
-    background: #DDDAD0;
+    background: #D1D3D4;
     transform: translateY(-1px);
-    box-shadow: 0 4px 12px rgba(87, 86, 79, 0.12);
-    border-color: #7A7A73;
+    box-shadow: 0 4px 12px rgba(134, 176, 189, 0.12);
+    border-color: #E2A16F;
   }
 
   .item-accent {
     width: 4px;
-    background: #57564F;
+    background: #86B0BD;
     flex-shrink: 0;
   }
 
@@ -128,19 +128,19 @@
     display: flex;
     align-items: center;
     gap: 8px;
-    color: #57564F;
+    color: #86B0BD;
   }
 
   .notes-text {
     font-size: 18px;
     font-weight: 700;
-    color: #57564F;
+    color: #86B0BD;
   }
 
   .item-time {
     font-size: 12px;
-    color: #7A7A73;
-    background: #DDDAD0;
+    color: #E2A16F;
+    background: #D1D3D4;
     padding: 4px 8px;
     border-radius: 8px;
     font-weight: 500;
@@ -155,22 +155,22 @@
   .note-badge {
     display: inline-block;
     padding: 6px 12px;
-    background: #DDDAD0;
-    color: #57564F;
+    background: #D1D3D4;
+    color: #86B0BD;
     border-radius: 8px;
     font-size: 13px;
     font-weight: 600;
-    border: 1px solid #7A7A73;
+    border: 1px solid #E2A16F;
   }
 
   .empty-state {
     text-align: center;
     padding: 40px 20px;
-    color: #7A7A73;
+    color: #E2A16F;
   }
 
   .empty-icon {
-    color: #DDDAD0;
+    color: #D1D3D4;
     margin-bottom: 16px;
   }
 
@@ -182,8 +182,8 @@
 
   .clear-search-button {
     padding: 8px 16px;
-    background: #57564F;
-    color: #F8F3CE;
+    background: #86B0BD;
+    color: #FFF0DD;
     border: none;
     border-radius: 8px;
     cursor: pointer;
@@ -192,7 +192,7 @@
   }
 
   .clear-search-button:hover {
-    background: #7A7A73;
+    background: #E2A16F;
     transform: translateY(-1px);
   }
 
