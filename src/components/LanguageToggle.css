@@ -1,7 +1,8 @@
 .language-toggle {
   position: absolute;
-  top: 16px;
+  top: 50%;
   right: 20px;
+  transform: translateY(-50%);
   display: inline-flex;
   background: rgba(255, 240, 221, 0.15);
   border: 1px solid rgba(255, 240, 221, 0.35);
@@ -41,12 +42,20 @@
 
 @media (max-width: 480px) {
   .language-toggle {
-    top: 10px;
-    right: 12px;
+    right: 10px;
+    padding: 4px;
+    align-items: center;
   }
   .language-toggle-btn {
-    font-size: 12px;
-    padding: 5px 10px;
-    min-width: 36px;
+    font-size: 9px;
+    padding: 0 6px;
+    min-width: 22px;
+    height: 10px;
+    line-height: 10px;
+    letter-spacing: 0.2px;
+    box-sizing: border-box;
+  }
+  .language-toggle-btn.active {
+    box-shadow: none;
   }
 }

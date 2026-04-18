@@ -2,6 +2,8 @@
   text-align: center;
   background: #FFF0DD;
   min-height: 100vh;
+  display: flex;
+  flex-direction: column;
 }
 
 .App-logo {
@@ -17,16 +19,17 @@
 
 .App-header {
   background: #86B0BD;
-  min-height: 25vh;
+  height: 60px;
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   align-items: center;
-  justify-content: center;
+  justify-content: flex-start;
+  padding: 0 16px;
   font-size: calc(10px + 2vmin);
   color: #FFF0DD;
   box-shadow: 0 2px 8px rgba(134, 176, 189, 0.15);
   position: relative;
-  overflow: hidden;
+  overflow: visible;
 }
 
 .App-link {
@@ -34,7 +37,7 @@
 }
 
 .logo-image {
-  height: 20vh;
+  height: 100px;
   width: auto;
   object-fit: contain;
   transition: transform 0.3s ease;
@@ -51,6 +54,7 @@ main {
   border-radius: 20px 20px 0 0;
   margin-top: -10px;
   box-shadow: 0 -2px 8px rgba(134, 176, 189, 0.08);
+  flex: 1;
 }
 
 @keyframes App-logo-spin {
